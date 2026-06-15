@@ -1,25 +1,39 @@
 """FastAPI backend for AI Board Room.
 
 Endpoints:
-    GET  /health       — liveness check
-    POST /onboard      — save company profile + PDFs, build RAG index
-    POST /board/run    — run a 3-round board debate on a decision
+    GET  /health              — liveness check
+    POST /onboard             — save company profile + PDFs, build RAG index
+    POST /board/run           — run board debate (uses session profile + RAG)
+    GET  /api/health          — liveness check (presentation UI)
+    POST /api/discover        — chairman discovery questions
+    POST /api/board           — run board (direct, no session)
+    POST /api/board/stream    — SSE streaming board run
 """
 
 from __future__ import annotations
 
+import asyncio
+import contextlib
 import json
 import shutil
-from pathlib import Path
+import sys
 from typing import Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from boardroom.board import run_board
+import boardroom.advisors  # ensure advisors are registered
+from boardroom.board import (
+    _chairman_synthesize,
+    _format_round1,
+    discover_questions,
+    run_board,
+)
 from boardroom.rag import DOCUMENTS_DIR, build_retriever
-from boardroom.schema import BoardResult
+from boardroom.registry import get_advisors
+from boardroom.schema import BoardResult, DiscoveryResult
 
 app = FastAPI(title="AI Board Room", version="0.1.0")
 
@@ -33,11 +47,12 @@ app.add_middleware(
 # ── In-memory session (single-user MVP) ──────────────────────────────────────
 _session: dict = {"profile": None, "retriever": None}
 
+_LANGUAGES = {"ar": "Arabic", "en": "English"}
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _format_profile(profile: dict) -> str:
-    """Turn the onboarding JSON into a plain-text context block for the LLM."""
     challenges = ", ".join(profile.get("challenges", [])) or "None specified"
     return (
         f"Company: {profile.get('business_name', 'Unknown')}\n"
@@ -52,14 +67,13 @@ def _format_profile(profile: dict) -> str:
 
 
 def _build_context(decision: str) -> Optional[str]:
-    """Combine the company profile with relevant RAG chunks."""
+    """Combine company profile with relevant RAG chunks."""
     profile = _session.get("profile")
     retriever = _session.get("retriever")
 
     parts = []
     if profile:
         parts.append(_format_profile(profile))
-
     if retriever:
         docs = retriever.invoke(decision)
         if docs:
@@ -69,13 +83,20 @@ def _build_context(decision: str) -> Optional[str]:
     return "\n\n".join(parts) if parts else None
 
 
-# ── Schemas ──────────────────────────────────────────────────────────────────
+# ── Request schemas ───────────────────────────────────────────────────────────
 
 class RunRequest(BaseModel):
     decision: str
 
 
-# ── Routes ───────────────────────────────────────────────────────────────────
+class BoardRequest(BaseModel):
+    decision: str
+    context: str = ""
+    lang: str = "en"    # "en" | "ar"
+    fast: bool = False  # skip Round 2 for ~2x speed
+
+
+# ── Onboarding routes ─────────────────────────────────────────────────────────
 
 @app.get("/health")
 def health():
@@ -87,11 +108,7 @@ async def onboard(
     profile: str = Form(..., description="Onboarding JSON stringified"),
     files: list[UploadFile] = File(default=[]),
 ):
-    """Accept the company profile and uploaded PDFs from the onboarding page.
-
-    Saves PDFs to documents/, rebuilds the FAISS index, and caches the
-    retriever for subsequent /board/run calls.
-    """
+    """Accept company profile + PDFs, save to disk, rebuild RAG index."""
     try:
         profile_data = json.loads(profile)
     except json.JSONDecodeError:
@@ -99,7 +116,6 @@ async def onboard(
 
     _session["profile"] = profile_data
 
-    # Clear old PDFs and save the new ones
     for old in DOCUMENTS_DIR.glob("*.pdf"):
         old.unlink()
 
@@ -111,7 +127,6 @@ async def onboard(
                 shutil.copyfileobj(upload.file, f)
             saved.append(upload.filename)
 
-    # Rebuild FAISS index (invalidates cache automatically via fingerprint)
     _session["retriever"] = build_retriever()
 
     return {
@@ -124,20 +139,88 @@ async def onboard(
 
 @app.post("/board/run", response_model=BoardResult)
 def board_run(body: RunRequest):
-    """Run a 3-round board debate on a business decision.
-
-    Uses the company profile and uploaded documents (if any) as context.
-    Returns the full BoardResult including all advisor responses and the
-    chairman's verdict.
-    """
+    """Run a board debate using the current session profile and RAG context."""
     if not body.decision.strip():
         raise HTTPException(status_code=400, detail="decision cannot be empty")
 
     context = _build_context(body.decision)
-
     result = run_board(
         decision=body.decision,
         context=context,
         retriever=_session.get("retriever"),
     )
     return result
+
+
+# ── Presentation UI routes ────────────────────────────────────────────────────
+
+@app.get("/api/health")
+def api_health():
+    return {"ok": True}
+
+
+@app.post("/api/discover", response_model=DiscoveryResult)
+def discover(req: BoardRequest):
+    language = _LANGUAGES.get(req.lang, "English")
+    with contextlib.redirect_stdout(sys.stderr):
+        return discover_questions(req.decision, language=language)
+
+
+@app.post("/api/board", response_model=BoardResult)
+def api_board(req: BoardRequest):
+    language = _LANGUAGES.get(req.lang, "English")
+    with contextlib.redirect_stdout(sys.stderr):
+        return run_board(req.decision, req.context or None, language=language, fast=req.fast)
+
+
+@app.post("/api/board/stream")
+async def board_stream(req: BoardRequest):
+    """SSE endpoint — yields each advisor response as it completes."""
+    language = _LANGUAGES.get(req.lang, "English")
+    advisors = get_advisors()
+
+    async def generate():
+        loop = asyncio.get_event_loop()
+
+        r1_tasks = [
+            loop.run_in_executor(None, adv.analyze, req.decision, req.context or None, language)
+            for adv in advisors
+        ]
+        round1 = []
+        for coro in asyncio.as_completed(r1_tasks):
+            result = await coro
+            round1.append(result)
+            yield f"data: {json.dumps({'type': 'r1', 'data': result.model_dump()})}\n\n"
+
+        if not req.fast:
+            others = _format_round1(round1)
+
+            def _r2(adv):
+                ctx = (
+                    "ROUND 2: Challenge a specific advisor by name. "
+                    "No repeating Round 1. Max 3 sentences.\n\n"
+                    f"Round 1 arguments:\n{others}\n\n"
+                    f"Company context:\n{req.context or 'None.'}"
+                )
+                return adv.analyze(req.decision, context=ctx, language=language)
+
+            r2_tasks = [loop.run_in_executor(None, _r2, adv) for adv in advisors]
+            round2 = []
+            for coro in asyncio.as_completed(r2_tasks):
+                result = await coro
+                round2.append(result)
+                yield f"data: {json.dumps({'type': 'r2', 'data': result.model_dump()})}\n\n"
+        else:
+            round2 = round1
+
+        verdict = await loop.run_in_executor(
+            None, _chairman_synthesize, req.decision, round1, round2, language
+        )
+        yield f"data: {json.dumps({'type': 'verdict', 'data': verdict.model_dump()})}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )

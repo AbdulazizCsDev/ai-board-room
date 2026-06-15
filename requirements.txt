@@ -1,6 +1,4 @@
-# --- AI Board Room: skeleton dependencies (kept minimal on purpose) ---
-# Only what the frame needs. RAG (chromadb), the API (fastapi), and the UI
-# get added later, by their own workstreams — they are not part of the skeleton.
+# --- AI Board Room: dependencies ---
 
 langchain              # core chains / prompt + LLM plumbing
 langchain-openai       # OpenAI chat model + embeddings
