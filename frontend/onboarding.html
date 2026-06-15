@@ -793,21 +793,19 @@ function removeFile(i){
   buildFileList();
 }
 
-/* ════════════════════════════════════════
-   EXPORT — builds profile JSON and downloads
-   everything so RAG teammate can ingest it
-════════════════════════════════════════ */
+const API_URL = 'http://localhost:8000';
+
 function buildOnboardingPayload(){
   return {
     session_id: crypto.randomUUID(),
-    business_name: answers.q1_name  || '',
+    business_name: answers.q1_name   || '',
     city:          answers.q1_city_q1 || '',
-    description:   answers.q1_what  || '',
-    industry:      answers.q2       || '',
-    team_size:     answers.q3a      || '',
-    revenue:       answers.revenue  || '',
-    risk_tolerance:answers.q5       || '',
-    challenges:    answers.q6       || [],
+    description:   answers.q1_what   || '',
+    industry:      answers.q2        || '',
+    team_size:     answers.q3a       || '',
+    revenue:       answers.revenue   || '',
+    risk_tolerance:answers.q5        || '',
+    challenges:    answers.q6        || [],
     documents: uploadedFiles.map(f => ({
       label:    f._label || '',
       filename: f.name
@@ -815,48 +813,32 @@ function buildOnboardingPayload(){
   };
 }
 
-function downloadBlob(blob, filename){
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
-}
-
 async function exportOnboarding(){
   const btn = document.getElementById('btn-build');
   btn.classList.add('loading');
-  btn.innerHTML = '<i class="ti ti-loader"></i> Preparing...';
+  btn.innerHTML = '<i class="ti ti-loader"></i> Building your board...';
 
   try {
     const profile = buildOnboardingPayload();
-    const safeName = profile.business_name.replace(/[^a-zA-Z0-9]/g,'-') || 'company';
 
-    // ── Download 1: profile JSON ──
-    const jsonBlob = new Blob(
-      [JSON.stringify(profile, null, 2)],
-      { type: 'application/json' }
-    );
-    downloadBlob(jsonBlob, `boardroom-profile-${safeName}.json`);
+    const form = new FormData();
+    form.append('profile', JSON.stringify(profile));
+    uploadedFiles.forEach(f => form.append('files', f, f.name));
 
-    // ── Download 2+: each uploaded document ──
-    // Small delay between downloads so browser doesn't block them
-    for(let i = 0; i < uploadedFiles.length; i++){
-      await new Promise(r => setTimeout(r, 300));
-      downloadBlob(uploadedFiles[i], uploadedFiles[i].name);
+    const res = await fetch(`${API_URL}/onboard`, { method: 'POST', body: form });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `Server error ${res.status}`);
     }
 
+    goTo(8);
+
   } catch(err){
-    console.error('Export failed:', err);
-  } finally {
+    console.error('Onboard failed:', err);
+    alert(`Could not reach the board: ${err.message}\n\nMake sure the server is running on ${API_URL}`);
     btn.classList.remove('loading');
     btn.innerHTML = '<i class="ti ti-arrow-right"></i> Build my board';
   }
-
-  // ── Go to profile reveal ──
-  goTo(8);
 }
 
 function buildProfile(){
