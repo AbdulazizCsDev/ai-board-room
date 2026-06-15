@@ -10,3 +10,6 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
+
+# Company documents — real PDFs should not live in git
+documents/*.pdf

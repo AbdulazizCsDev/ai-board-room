@@ -1,8 +1,9 @@
 from __future__ import annotations
 from langchain_core.prompts import ChatPromptTemplate
 
-import boardroom.advisors 
+import boardroom.advisors
 from boardroom.llm import get_llm
+from boardroom.rag import build_retriever
 from boardroom.registry import get_advisors
 from boardroom.schema import (
     AdvisorResponse,
@@ -16,9 +17,10 @@ def _format_round1(responses: list[AdvisorResponse]) -> str:
         lines.append(f'[{r.advisor}] Vote: {r.vote.value}\n{r.reasoning}')
     return '\n\n'.join(lines)
     
-def run_board(decision: str, context: str = '') -> BoardResult: 
+def run_board(decision: str, context: str = '') -> BoardResult:
 
-    advisors = get_advisors()
+    retriever = build_retriever()
+    advisors = get_advisors(retriever=retriever)
     if not advisors: 
         raise RuntimeError("No advisors regigstered. Add at least one to advisors/__init__.py")
     
