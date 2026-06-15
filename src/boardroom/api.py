@@ -241,10 +241,17 @@ async def board_stream(req: BoardRequest):
     )
 
 
-# ── Serve built React frontend (must be last) ─────────────────────────────────
+# ── Serve static files and pages (must be last) ──────────────────────────────
+FRONTEND_DIR = FRONTEND_DIST.parent  # frontend/
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return FileResponse(str(FRONTEND_DIR / "onboarding.html"))
+
 if FRONTEND_DIST.exists():
     app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
 
-    @app.get("/{full_path:path}", include_in_schema=False)
-    async def serve_spa(full_path: str):
+    @app.get("/app", include_in_schema=False)
+    @app.get("/app/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str = ""):
         return FileResponse(str(FRONTEND_DIST / "index.html"))
