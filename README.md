@@ -107,19 +107,6 @@ Local: put these in `.env`. Hosted: set them as environment variables (never com
 
 ---
 
-## ☁️ Deploy (Render, free tier)
-
-The repo ships a `Dockerfile` (multi‑stage: builds the UI, then serves API + UI) and a `render.yaml` blueprint.
-
-1. Push to GitHub (done).
-2. **render.com → New → Blueprint → pick this repo → Apply.** Render reads `render.yaml`.
-3. Set **`OPENAI_API_KEY`** in the service's **Environment** tab.
-4. ~5–8 min later you get an HTTPS URL serving the whole app.
-
-> The free plan sleeps after ~15 min idle (first hit ≈ 50 s cold start, then fast). Railway and Hugging Face Spaces work the same way via the included `Dockerfile`.
-
----
-
 ## 📁 Project structure
 
 ```
