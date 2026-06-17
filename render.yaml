@@ -1,0 +1,16 @@
+# Render Blueprint — deploys the whole app (API + built UI) as one Docker service.
+# Usage: Render Dashboard → New → Blueprint → pick this repo. Then set OPENAI_API_KEY.
+services:
+  - type: web
+    name: ai-board-room
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free            # free spins down when idle (~50s cold start); use "starter" to keep warm
+    region: frankfurt     # closest to KSA among Render regions; change if you prefer
+    healthCheckPath: /api/health
+    autoDeploy: true      # redeploy on every push to the connected branch
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false        # set this secret in the Render dashboard — never committed
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini

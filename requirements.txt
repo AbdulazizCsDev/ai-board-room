@@ -1,14 +1,18 @@
-# --- AI Board Room: dependencies ---
+# --- AI Board Room: dependencies (pinned for reproducible deploys) ---
 
-langchain              # core chains / prompt + LLM plumbing
-langchain-openai       # OpenAI chat model + embeddings
-langchain-community    # extra integrations (document loaders, retrievers)
-pydantic               # the shared data schema (the contract)
-pydantic-settings      # load config from .env
-python-dotenv          # read the .env file
-faiss-cpu              # local vector store (RAG)
-pypdf                  # PDF loader
-fastapi                # REST API framework
-uvicorn[standard]      # ASGI server
-python-multipart       # multipart/form-data (file uploads)
-aiofiles               # required by FastAPI StaticFiles
+langchain==1.2.15                 # core chains / prompt + LLM plumbing
+langchain-core==1.3.0
+langchain-openai==1.1.15          # OpenAI chat model + embeddings
+langchain-community==0.4.1        # document loaders, retrievers
+langchain-text-splitters==1.1.2   # RAG chunking
+openai==2.26.0
+tiktoken==0.12.0
+pydantic==2.9.0                   # the shared data schema (the contract)
+pydantic-settings==2.14.0         # load config from env / .env
+python-dotenv==1.0.1
+faiss-cpu==1.13.2                 # local vector store (RAG)
+pypdf==6.10.2                     # PDF loader
+fastapi==0.115.0                  # REST API framework
+uvicorn[standard]==0.30.6         # ASGI server
+python-multipart==0.0.12          # multipart/form-data (file uploads)
+aiofiles==24.1.0                  # required by FastAPI StaticFiles
