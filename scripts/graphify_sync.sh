@@ -21,11 +21,11 @@ cd "$(dirname "$0")/.." || exit 0
 if ! command -v graphify >/dev/null 2>&1; then
   # Only attempt an install if we have a tool to do it with.
   if command -v uv >/dev/null 2>&1; then
-    uv tool install -q graphifyy >/dev/null 2>&1
+    uv tool install -q "graphifyy[mcp]" >/dev/null 2>&1
   elif command -v pipx >/dev/null 2>&1; then
-    pipx install graphifyy >/dev/null 2>&1
+    pipx install "graphifyy[mcp]" >/dev/null 2>&1
   elif command -v pip >/dev/null 2>&1; then
-    pip install --user -q graphifyy >/dev/null 2>&1
+    pip install --user -q "graphifyy[mcp]" >/dev/null 2>&1
   fi
   export PATH="$HOME/.local/bin:$PATH"
 fi

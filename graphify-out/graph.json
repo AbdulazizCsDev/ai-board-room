@@ -4,6 +4,45 @@
   "graph": {},
   "nodes": [
     {
+      "label": ".mcp.json",
+      "file_type": "code",
+      "source_file": ".mcp.json",
+      "source_location": "L1",
+      "metadata": {
+        "mcp_kind": "mcp_config_file"
+      },
+      "_origin": "ast",
+      "id": "mcp",
+      "community": 14,
+      "norm_label": ".mcp.json"
+    },
+    {
+      "label": "graphify",
+      "file_type": "code",
+      "source_file": ".mcp.json",
+      "source_location": "L1",
+      "metadata": {
+        "mcp_kind": "mcp_server"
+      },
+      "_origin": "ast",
+      "id": "mcp_mcp_server_graphify",
+      "community": 14,
+      "norm_label": "graphify"
+    },
+    {
+      "label": "bash",
+      "file_type": "code",
+      "source_file": ".mcp.json",
+      "source_location": "L1",
+      "metadata": {
+        "mcp_kind": "mcp_command"
+      },
+      "_origin": "ast",
+      "id": "mcp_command_bash",
+      "community": 14,
+      "norm_label": "bash"
+    },
+    {
       "label": "package.json",
       "file_type": "code",
       "source_file": "frontend/package.json",
@@ -722,6 +761,48 @@
       "id": "scripts_export_result_rationale_1",
       "community": 3,
       "norm_label": "run a board meeting and dump the boardresult as json for the presentation ui.  u"
+    },
+    {
+      "label": "graphify_mcp.sh",
+      "file_type": "code",
+      "source_file": "scripts/graphify_mcp.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "scripts_graphify_mcp",
+      "community": 13,
+      "norm_label": "graphify_mcp.sh"
+    },
+    {
+      "label": "graphify_mcp.sh script",
+      "file_type": "code",
+      "source_file": "scripts/graphify_mcp.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "home_user_ai_board_room_scripts_graphify_mcp_sh__entry",
+      "community": 13,
+      "norm_label": "graphify_mcp.sh script"
+    },
+    {
+      "label": "PATH",
+      "file_type": "code",
+      "source_file": "scripts/graphify_mcp.sh",
+      "source_location": "L11",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_graphify_mcp_path",
+      "community": 13,
+      "norm_label": "path"
     },
     {
       "label": "graphify_sync.sh",
@@ -2099,7 +2180,7 @@
       "label": "Keeping the graph fresh (automatic)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L37",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "claude_keeping_the_graph_fresh_automatic",
       "community": 8,
@@ -2217,6 +2298,27 @@
     }
   ],
   "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".mcp.json",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "mcp",
+      "target": "mcp_mcp_server_graphify"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".mcp.json",
+      "source_location": "L1",
+      "weight": 1.0,
+      "context": "command",
+      "source": "mcp_mcp_server_graphify",
+      "target": "mcp_command_bash"
+    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -3346,12 +3448,32 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "scripts/graphify_mcp.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_graphify_mcp",
+      "target": "home_user_ai_board_room_scripts_graphify_mcp_sh__entry"
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/graphify_mcp.sh",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_graphify_mcp",
+      "target": "scripts_graphify_mcp_path"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "scripts/graphify_sync.sh",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_graphify_sync",
-      "target": "home_user_ai_board_room_scripts_graphify_sync_sh__entry",
-      "confidence_score": 1.0
+      "target": "home_user_ai_board_room_scripts_graphify_sync_sh__entry"
     },
     {
       "relation": "defines",
@@ -3359,9 +3481,9 @@
       "source_file": "scripts/graphify_sync.sh",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_graphify_sync",
-      "target": "scripts_graphify_sync_path",
-      "confidence_score": 1.0
+      "target": "scripts_graphify_sync_path"
     },
     {
       "relation": "rationale_for",
@@ -6296,9 +6418,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude",
-      "target": "claude_claude_md_ai_board_room",
-      "confidence_score": 1.0
+      "target": "claude_claude_md_ai_board_room"
     },
     {
       "relation": "contains",
@@ -6306,9 +6428,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude_claude_md_ai_board_room",
-      "target": "claude_keeping_the_graph_fresh_automatic",
-      "confidence_score": 1.0
+      "target": "claude_keeping_the_graph_fresh_automatic"
     },
     {
       "relation": "contains",
@@ -6316,9 +6438,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude_claude_md_ai_board_room",
-      "target": "claude_knowledge_graph_graphify_read_this_first",
-      "confidence_score": 1.0
+      "target": "claude_knowledge_graph_graphify_read_this_first"
     },
     {
       "relation": "contains",
@@ -6326,9 +6448,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude_claude_md_ai_board_room",
-      "target": "claude_project",
-      "confidence_score": 1.0
+      "target": "claude_project"
     },
     {
       "relation": "contains",
@@ -6432,5 +6554,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7968f958f56d2be69cd2415ab41dec1146897070"
+  "built_at_commit": "bef277cbe5e68326a70a3c74d2ad2570287c498e"
 }

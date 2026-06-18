@@ -1,16 +1,16 @@
 # Graph Report - ai-board-room  (2026-06-18)
 
 ## Corpus Check
-- 32 files · ~19,182 words
+- 34 files · ~19,360 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 220 nodes · 407 edges · 13 communities (11 shown, 2 thin omitted)
+- 226 nodes · 411 edges · 15 communities (11 shown, 4 thin omitted)
 - Extraction: 82% EXTRACTED · 18% INFERRED · 0% AMBIGUOUS · INFERRED: 74 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7968f958`
+- Built from commit: `bef277cb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,6 +26,8 @@
 - [[_COMMUNITY_Community 8|Community 8]]
 - [[_COMMUNITY_Community 9|Community 9]]
 - [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `AdvisorResponse` - 19 edges
@@ -54,7 +56,7 @@
 ## Import Cycles
 - 1-file cycle: `src/boardroom/advisors/__init__.py -> src/boardroom/advisors/__init__.py`
 
-## Communities (13 total, 2 thin omitted)
+## Communities (15 total, 4 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.08
@@ -93,19 +95,19 @@ Cohesion: 0.40
 Nodes (4): CLAUDE.md — AI Board Room, Keeping the graph fresh (automatic), Knowledge graph (graphify) — read this first, Project
 
 ## Knowledge Gaps
-- **39 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+34 more)
+- **42 isolated node(s):** `bash`, `name`, `private`, `version`, `type` (+37 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `BaseAdvisor` connect `Community 2` to `Community 1`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
+  _High betweenness centrality (0.057) - this node is a cross-community bridge._
 - **Why does `AdvisorResponse` connect `Community 1` to `Community 2`, `Community 3`?**
-  _High betweenness centrality (0.047) - this node is a cross-community bridge._
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
 - **Why does `run_board()` connect `Community 3` to `Community 1`, `Community 5`, `Community 6`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Are the 15 inferred relationships involving `AdvisorResponse` (e.g. with `BoardRequest` and `RoundRequest`) actually correct?**
   _`AdvisorResponse` has 15 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 13 inferred relationships involving `ChairmanVerdict` (e.g. with `BoardRequest` and `RoundRequest`) actually correct?**

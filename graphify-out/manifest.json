@@ -170,13 +170,23 @@
     "semantic_hash": ""
   },
   "scripts/graphify_sync.sh": {
-    "mtime": 1781780089.5292833,
-    "ast_hash": "981669c8a060dc86c34c0c0b45cdd05f",
+    "mtime": 1781780608.9813142,
+    "ast_hash": "d4a2da623219b5ed6ea33eff2a9c7988",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1781780130.5052857,
-    "ast_hash": "22a82d69a22277bd5df4271038067339",
+    "mtime": 1781780614.5293145,
+    "ast_hash": "81e60afc2ed0d8d10e325475d3ffad51",
+    "semantic_hash": ""
+  },
+  "scripts/graphify_mcp.sh": {
+    "mtime": 1781780603.597314,
+    "ast_hash": "ae0d15f255fdf0ac1e80ae14376e522f",
+    "semantic_hash": ""
+  },
+  ".mcp.json": {
+    "mtime": 1781780571.9013119,
+    "ast_hash": "f2be870affd43e41e379b20a83c06662",
     "semantic_hash": ""
   }
 }

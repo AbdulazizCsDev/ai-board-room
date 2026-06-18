@@ -22,7 +22,12 @@ relationships, and "what connects to what".
   connections.
 - `graphify-out/graph.json` — the queryable graph (212+ nodes / 401+ edges).
 
-Query it from the shell (no API key needed):
+**Preferred: query via the graphify MCP server.** `.mcp.json` registers a
+`graphify` MCP server (started by `scripts/graphify_mcp.sh`) exposing tools:
+`query_graph`, `get_node`, `get_neighbors`, `get_community`, `god_nodes`,
+`graph_stats`, `shortest_path`. Use these to interrogate the graph natively.
+
+Or query it from the shell (no API key needed):
 
 ```bash
 graphify query "how does a board session flow from intake to verdict?"
