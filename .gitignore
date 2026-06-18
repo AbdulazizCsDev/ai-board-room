@@ -53,3 +53,7 @@ documents/*.pdf
 
 # FAISS index cache — derived from documents, rebuilt automatically
 .rag_cache/
+
+# graphify — commit the queryable graph + report; skip derived viz/cache
+graphify-out/graph.html
+graphify-out/cache/
