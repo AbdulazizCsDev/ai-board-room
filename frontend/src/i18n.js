@@ -23,12 +23,11 @@ export const UI = {
     en: "Type your own business decision…",
     ar: "اكتب قرارك التجاري الخاص…",
   },
-  runDemo: { en: "Play the demo", ar: "شغّل العرض الجاهز" },
-  runLive: { en: "Ask the board (live)", ar: "اسأل المجلس (حي)" },
+  runLive: { en: "Ask the board", ar: "اسأل المجلس" },
   generating: { en: "The board is deliberating…", ar: "المجلس يتداول…" },
   liveHint: {
-    en: "Live answers take ~30s and need the API server running.",
-    ar: "الرد الحي يأخذ ~٣٠ ثانية ويحتاج تشغيل سيرفر الـAPI.",
+    en: "The board takes about 30 seconds — two rounds of debate, then a verdict.",
+    ar: "يستغرق المجلس حوالي ٣٠ ثانية — جولتا نقاش ثم القرار.",
   },
 
   // discovery chat
@@ -92,13 +91,14 @@ export const UI = {
   round2Short: { en: "Round 2", ar: "الجولة ٢" },
   deliberating: { en: "The board is deliberating…", ar: "المجلس يتداول…" },
   synthesizing: { en: "The chairman is synthesizing…", ar: "الرئيس يصوغ القرار…" },
-  play: { en: "Play", ar: "تشغيل" },
-  pause: { en: "Pause", ar: "إيقاف" },
-  next: { en: "Next", ar: "التالي" },
-  restart: { en: "Replay", ar: "إعادة" },
   toVerdict: { en: "See the verdict", ar: "اعرض القرار" },
-  continueWord: { en: "Continue", ar: "متابعة" },
-  thinking: { en: "deliberating…", ar: "يتداول…" },
+  // empty state (no session yet)
+  emptyTitle: { en: "No board session yet", ar: "لا توجد جلسة للمجلس بعد" },
+  emptyLede: {
+    en: "Put a decision on the table first — the board will debate it and hand you a verdict.",
+    ar: "اطرح قراراً على الطاولة أولاً — سيناقشه المجلس ويسلّمك قراراً واضحاً.",
+  },
+  emptyCta: { en: "Convene the board", ar: "اعقد الجلسة" },
   // interjection
   interjectLabel: { en: "Add context to the board", ar: "أضف سياقاً للمجلس" },
   interjectPlaceholder: {
@@ -106,10 +106,6 @@ export const UI = {
     ar: "قاطِع — أضف قيداً أو معلومة أو سؤالاً…",
   },
   interjected: { en: "you added context", ar: "أضفت سياقاً" },
-  spaceHint: {
-    en: "Auto-playing · P = pause/play · ←/→ review · R = replay",
-    ar: "تشغيل تلقائي · P = إيقاف/تشغيل · ←/→ مراجعة · R = إعادة",
-  },
 
   // verdict
   verdictEyebrow: { en: "The chairman rules", ar: "الرئيس يحكم" },

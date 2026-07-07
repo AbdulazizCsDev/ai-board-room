@@ -6,7 +6,7 @@
 <title>AI Board Room — Your AI board of advisors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f7f4ec;
@@ -23,13 +23,22 @@
   --customer:#c5512a;  --customer-bg:#faeae1;
   --warn:#9a6810;      --warn-bg:#f7eed8;
   --r:16px; --r-sm:11px;
+  --serif:'Fraunces','Amiri',Georgia,serif;
+  --sans:'Inter','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Sans Arabic',monospace;
+}
+/* Arabic swaps the serif display to Amiri and body to Plex Arabic */
+html[dir="rtl"]{
+  --serif:'Amiri','Fraunces',Georgia,serif;
+  --sans:'IBM Plex Sans Arabic','Inter',system-ui,sans-serif;
+  --mono:'IBM Plex Sans Arabic','JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
   background:var(--bg);
   color:var(--ink);
-  font-family:'Inter',sans-serif;
+  font-family:var(--sans);
   font-size:15px;
   line-height:1.65;
   -webkit-font-smoothing:antialiased;
@@ -51,22 +60,29 @@ body{
   background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--bg)
 }
 .brand-mark i{font-size:20px}
-.brand-name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-0.01em}
+.brand-name{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:-0.01em}
 .brand-name span{font-style:italic;font-weight:400;color:var(--ink-soft)}
 .topbar-cta{
   display:inline-flex;align-items:center;gap:7px;
   background:none;border:1px solid var(--line);color:var(--ink-soft);
   padding:9px 18px;border-radius:30px;cursor:pointer;
-  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+  font-family:var(--sans);font-size:13px;font-weight:500;
   transition:all 0.15s;text-decoration:none;
 }
 .topbar-cta:hover{border-color:var(--ink-faint);color:var(--ink)}
+.topbar-side{display:flex;align-items:center;gap:10px}
+.lang-toggle{
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);
+  font-family:var(--sans);
+}
+.lang-toggle:hover{border-color:var(--ink-faint)}
 
 /* ── Hero ── */
 .shell{max-width:960px;margin:0 auto;padding:20px 24px 80px;flex:1;width:100%}
 .hero{text-align:center;padding:38px 0 20px}
 .hero-eyebrow{
-  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.16em;
   text-transform:uppercase;color:var(--market);margin-bottom:18px;
   display:inline-flex;align-items:center;gap:10px;
 }
@@ -74,7 +90,7 @@ body{
   content:'';width:24px;height:2px;background:var(--market);border-radius:1px;
 }
 .hero h1{
-  font-family:'Fraunces',serif;
+  font-family:var(--serif);
   font-size:clamp(38px,7vw,64px);
   font-weight:500;line-height:1.08;letter-spacing:-0.02em;
   margin-bottom:20px;
@@ -101,7 +117,7 @@ body{
   display:inline-flex;align-items:center;gap:10px;
   background:var(--ink);color:var(--bg);
   border:none;padding:17px 36px;border-radius:34px;
-  font-family:'Inter',sans-serif;font-size:16px;font-weight:500;
+  font-family:var(--sans);font-size:16px;font-weight:500;
   cursor:pointer;transition:transform 0.15s;text-decoration:none;
 }
 .btn-primary:hover{transform:translateY(-2px)}
@@ -110,7 +126,7 @@ body{
 .skip-btn{
   display:inline-flex;align-items:center;gap:7px;
   background:none;border:none;cursor:pointer;
-  color:var(--ink-faint);font-family:'Inter',sans-serif;font-size:14px;
+  color:var(--ink-faint);font-family:var(--sans);font-size:14px;
   text-decoration:underline;text-underline-offset:3px;
   padding:4px 8px;transition:color 0.15s;
 }
@@ -137,17 +153,17 @@ body{
 .feat.f-debate .feat-icon{background:var(--market-bg);color:var(--market)}
 .feat.f-verdict .feat-icon{background:var(--legal-bg);color:var(--legal)}
 .feat.f-tension .feat-icon{background:var(--customer-bg);color:var(--customer)}
-.feat h3{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin-bottom:6px}
+.feat h3{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:6px}
 .feat p{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
 
 /* ── How it works ── */
 .how{margin-top:64px;text-align:center}
 .how-eyebrow{
-  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.14em;
   text-transform:uppercase;color:var(--legal);margin-bottom:12px;
 }
 .how h2{
-  font-family:'Fraunces',serif;font-size:clamp(26px,4vw,36px);
+  font-family:var(--serif);font-size:clamp(26px,4vw,36px);
   font-weight:500;letter-spacing:-0.015em;margin-bottom:34px;
 }
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:start}
@@ -157,12 +173,12 @@ body{
   padding:22px;position:relative;
 }
 .step-num{
-  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+  font-family:var(--mono);font-size:12px;font-weight:500;
   width:28px;height:28px;border-radius:50%;
   background:var(--ink);color:var(--bg);
   display:flex;align-items:center;justify-content:center;margin-bottom:14px;
 }
-.step h4{font-family:'Fraunces',serif;font-size:16.5px;font-weight:600;margin-bottom:5px}
+.step h4{font-family:var(--serif);font-size:16.5px;font-weight:600;margin-bottom:5px}
 .step p{font-size:13px;color:var(--ink-soft);line-height:1.6}
 
 /* bottom CTA */
@@ -177,7 +193,7 @@ body{
   border-radius:50%;background:rgba(247,244,236,0.05);
 }
 .bottom-cta h2{
-  font-family:'Fraunces',serif;font-size:clamp(24px,4vw,34px);
+  font-family:var(--serif);font-size:clamp(24px,4vw,34px);
   font-weight:500;letter-spacing:-0.015em;margin-bottom:8px;position:relative;
 }
 .bottom-cta p{font-size:15px;color:rgba(247,244,236,0.7);margin-bottom:26px;position:relative}
@@ -185,7 +201,7 @@ body{
   display:inline-flex;align-items:center;gap:9px;
   background:var(--bg);color:var(--ink);
   border:none;padding:15px 32px;border-radius:32px;
-  font-family:'Inter',sans-serif;font-size:15px;font-weight:600;
+  font-family:var(--sans);font-size:15px;font-weight:600;
   cursor:pointer;transition:transform 0.15s;text-decoration:none;position:relative;
 }
 .btn-invert:hover{transform:translateY(-2px)}
@@ -214,7 +230,7 @@ body{
   margin:0 auto 16px;
 }
 .modal-icon i{font-size:26px}
-.modal h3{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:10px}
+.modal h3{font-family:var(--serif);font-size:21px;font-weight:600;margin-bottom:10px}
 .modal p{font-size:14px;color:var(--ink-soft);line-height:1.65;margin-bottom:8px}
 .modal .modal-note{font-size:12.5px;color:var(--ink-faint);margin-bottom:22px}
 .modal-actions{display:flex;flex-direction:column;gap:10px}
@@ -222,7 +238,7 @@ body{
 .btn-skip-anyway{
   background:none;border:1px solid var(--line);color:var(--ink-soft);
   padding:12px 26px;border-radius:30px;cursor:pointer;
-  font-family:'Inter',sans-serif;font-size:13.5px;transition:all 0.15s;
+  font-family:var(--sans);font-size:13.5px;transition:all 0.15s;
 }
 .btn-skip-anyway:hover{border-color:var(--ink-faint);color:var(--ink)}
 
@@ -230,7 +246,7 @@ body{
 .foot{
   text-align:center;padding:26px 0;color:var(--ink-faint);font-size:12px;
   border-top:1px solid var(--line);
-  font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;
+  font-family:var(--mono);letter-spacing:0.06em;
 }
 </style>
 </head>
@@ -292,36 +308,35 @@ body{
     <div class="brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10l7.383 7.418c.823 .82 .823 2.148 0 2.967a2.11 2.11 0 0 1 -2.976 0l-7.407 -7.385"/><path d="M6 9l4 4"/><path d="M13 10l-4 -4"/><path d="M3 21h7"/><path d="M6.793 15.793l-3.586 -3.586a1 1 0 0 1 0 -1.414l2.293 -2.293l.5 .5l3 -3l-.5 -.5l2.293 -2.293a1 1 0 0 1 1.414 0l3.586 3.586a1 1 0 0 1 0 1.414l-2.293 2.293l-.5 -.5l-3 3l.5 .5l-2.293 2.293a1 1 0 0 1 -1.414 0"/></svg></div>
     <div class="brand-name">Board<span>room</span></div>
   </div>
-  <button class="topbar-cta" onclick="openSkipModal()">
-    Skip to the boardroom <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg>
-  </button>
+  <div class="topbar-side">
+    <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">العربية</button>
+    <button class="topbar-cta" onclick="openSkipModal()">
+    <span data-i18n="topSkip">Skip to the boardroom</span> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg>
+    </button>
+  </div>
 </div>
 
 <div class="shell">
 
   <!-- ── Hero ── -->
   <section class="hero">
-    <div class="hero-eyebrow">Your AI board of advisors</div>
-    <h1>Every leader deserves<br><em>a board.</em></h1>
-    <p class="lede">
-      Describe a business decision. Your AI advisors analyze it from every angle,
-      argue it out in a live debate, and hand you a clear, reasoned verdict.
-    </p>
+    <div class="hero-eyebrow" data-i18n="eyebrow">Your AI board of advisors</div>
+    <h1 data-i18n="h1">Every leader deserves<br><em>a board.</em></h1>
+    <p class="lede" data-i18n="lede">Describe a business decision. Your AI advisors analyze it from every angle, argue it out in a live debate, and hand you a clear, reasoned verdict.</p>
 
     <div class="advisor-row">
-      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-legal"/></svg><span>Legal</span></div>
-      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-finance"/></svg><span>Finance</span></div>
-      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-market"/></svg><span>Marketing</span></div>
-      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-customer"/></svg><span>Customer</span></div>
+      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-legal"/></svg><span data-i18n="advLegal">Legal</span></div>
+      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-finance"/></svg><span data-i18n="advFinance">Finance</span></div>
+      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-market"/></svg><span data-i18n="advMarketing">Marketing</span></div>
     </div>
 
     <div class="cta-block">
       <a class="btn-primary" href="/onboarding">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg> Set up my board
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg> <span data-i18n="ctaSetup">Set up my board</span>
       </a>
-      <span class="cta-sub">Takes about 2 minutes — your advisors learn your business first.</span>
+      <span class="cta-sub" data-i18n="ctaSub">Takes about 2 minutes — your advisors learn your business first.</span>
       <button class="skip-btn" onclick="openSkipModal()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5v14l12 -7l-12 -7"/><path d="M20 5l0 14"/></svg> Skip the setup for now
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5v14l12 -7l-12 -7"/><path d="M20 5l0 14"/></svg> <span data-i18n="ctaSkip">Skip the setup for now</span>
       </button>
     </div>
   </section>
@@ -330,49 +345,49 @@ body{
   <section class="features">
     <div class="feat f-debate">
       <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"/><path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2"/></svg></div>
-      <h3>A real debate</h3>
-      <p>Advisors don't just answer — they challenge each other across two rounds, so weak arguments get exposed before you act.</p>
+      <h3 data-i18n="f1t">A real debate</h3>
+      <p data-i18n="f1d">Advisors don't just answer — they challenge each other across two rounds, so weak arguments get exposed before you act.</p>
     </div>
     <div class="feat f-verdict">
       <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4l4 -6"/></svg></div>
-      <h3>A clear verdict</h3>
-      <p>The chairman weighs every lens and rules: proceed, don't, or proceed with conditions — with confidence and next steps.</p>
+      <h3 data-i18n="f2t">A clear verdict</h3>
+      <p data-i18n="f2d">The chairman weighs every lens and rules: proceed, don't, or proceed with conditions — with confidence and next steps.</p>
     </div>
     <div class="feat f-tension">
       <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.931 6.936l1.275 4.249m5.607 5.609l4.251 1.275"/><path d="M11.683 12.317l5.759 -5.759"/><path d="M4 5.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M17 5.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M17 18.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M4 15.5a4.5 4.5 0 1 0 9 0a4.5 4.5 0 1 0 -9 0"/></svg></div>
-      <h3>The tension map</h3>
-      <p>See exactly where finance, legal, and market pull against each other — the friction that makes the decision hard.</p>
+      <h3 data-i18n="f3t">The tension map</h3>
+      <p data-i18n="f3d">See exactly where finance, legal, and market pull against each other — the friction that makes the decision hard.</p>
     </div>
   </section>
 
   <!-- ── How it works ── -->
   <section class="how">
-    <div class="how-eyebrow">How it works</div>
-    <h2>From question to verdict in minutes</h2>
+    <div class="how-eyebrow" data-i18n="howEyebrow">How it works</div>
+    <h2 data-i18n="howH2">From question to verdict in minutes</h2>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <h4>Brief your board</h4>
-        <p>Answer a few quick questions about your company — industry, size, revenue, challenges. Upload documents for advice grounded in your real numbers.</p>
+        <h4 data-i18n="s1t">Brief your board</h4>
+        <p data-i18n="s1d">Answer a few quick questions about your company — industry, size, revenue, challenges. Upload documents for advice grounded in your real numbers.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <h4>Put a decision on the table</h4>
-        <p>"Should we open a branch in Jeddah?" "Cut prices 20%?" Ask anything — the chairman clarifies what's vague before convening.</p>
+        <h4 data-i18n="s2t">Put a decision on the table</h4>
+        <p data-i18n="s2d">"Should we open a branch in Jeddah?" "Cut prices 20%?" Ask anything — the chairman clarifies what's vague before convening.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <h4>Watch the debate, get the call</h4>
-        <p>Advisors argue it out live. You can interject with facts mid-debate. The chairman synthesizes everything into a final recommendation.</p>
+        <h4 data-i18n="s3t">Watch the debate, get the call</h4>
+        <p data-i18n="s3d">Advisors argue it out live. You can interject with facts mid-debate. The chairman synthesizes everything into a final recommendation.</p>
       </div>
     </div>
   </section>
 
   <!-- ── Bottom CTA ── -->
   <section class="bottom-cta">
-    <h2>The board is waiting.</h2>
-    <p>Brief them once — every answer after that speaks your business.</p>
-    <a class="btn-invert" href="/onboarding"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg> Get started</a>
+    <h2 data-i18n="bh2">The board is waiting.</h2>
+    <p data-i18n="bp">Brief them once — every answer after that speaks your business.</p>
+    <a class="btn-invert" href="/onboarding"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg> <span data-i18n="bCta">Get started</span></a>
   </section>
 
 </div>
@@ -383,16 +398,12 @@ body{
 <div class="modal-backdrop" id="skip-modal" onclick="if(event.target===this)closeSkipModal()">
   <div class="modal">
     <div class="modal-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0"/><path d="M12 16h.01"/></svg></div>
-    <h3>Skip the setup?</h3>
-    <p>
-      Your advisors haven't been briefed yet. Without your company information,
-      the board <b>won't respond well</b> — its advice will be generic guesses
-      instead of recommendations tailored to your business.
-    </p>
-    <p class="modal-note">You can always add or edit your company info later from the boardroom.</p>
+    <h3 data-i18n="mTitle">Skip the setup?</h3>
+    <p data-i18n="mBody">Your advisors haven't been briefed yet. Without your company information, the board <b>won't respond well</b> — its advice will be generic guesses instead of recommendations tailored to your business.</p>
+    <p class="modal-note" data-i18n="mNote">You can always add or edit your company info later from the boardroom.</p>
     <div class="modal-actions">
-      <a class="btn-primary" href="/onboarding"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg> Set up my board (recommended)</a>
-      <button class="btn-skip-anyway" onclick="window.location.href=APP_URL">Skip anyway — take me to the boardroom</button>
+      <a class="btn-primary" href="/onboarding"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg> <span data-i18n="mSetup">Set up my board (recommended)</span></a>
+      <button class="btn-skip-anyway" data-i18n="mSkip" onclick="window.location.href=APP_URL">Skip anyway — take me to the boardroom</button>
     </div>
   </div>
 </div>
@@ -400,6 +411,62 @@ body{
 <script>
 // Same-origin by default; override via window.__APP_BASE__ when hosted separately.
 const APP_URL = ((typeof window !== 'undefined' && window.__APP_BASE__) || '') + '/app';
+// ── EN/AR (shares the 'boardroom.lang' key with the app) ──
+const AR = {
+  langBtn:'English',
+  topSkip:'ادخل المجلس مباشرة',
+  eyebrow:'مجلس مستشاريك بالذكاء الاصطناعي',
+  h1:'كل قائد يستحق<br><em>مجلساً.</em>',
+  lede:'صف قراراً تجارياً، ومستشاروك بالذكاء الاصطناعي يحلّلونه من كل زاوية، يتناقشون فيه مباشرة، ويسلّمونك قراراً واضحاً ومسبَّباً.',
+  advLegal:'القانوني', advFinance:'المالي', advMarketing:'السوق',
+  ctaSetup:'جهّز مجلسك',
+  ctaSub:'يستغرق حوالي دقيقتين — مستشاروك يتعرّفون على عملك أولاً.',
+  ctaSkip:'تخطَّ الإعداد الآن',
+  f1t:'نقاش حقيقي',
+  f1d:'المستشارون لا يكتفون بالإجابة — بل يتحدّون بعضهم عبر جولتين، فتنكشف الحجج الضعيفة قبل أن تتصرف.',
+  f2t:'قرار واضح',
+  f2d:'رئيس المجلس يوازن بين كل الزوايا ويحكم: نفّذ، لا تنفّذ، أو نفّذ بشروط — مع نسبة ثقة وخطوات تالية.',
+  f3t:'خريطة الخلافات',
+  f3d:'شاهد بالضبط أين تتجاذب زوايا المال والقانون والسوق — الاحتكاك الذي يجعل القرار صعباً.',
+  howEyebrow:'كيف يعمل',
+  howH2:'من السؤال إلى القرار في دقائق',
+  s1t:'عرّف مجلسك بعملك',
+  s1d:'أجب عن أسئلة سريعة عن شركتك — القطاع، الحجم، الإيرادات، التحديات. وارفع مستنداتك لتحصل على نصائح مبنية على أرقامك الفعلية.',
+  s2t:'اطرح قراراً على الطاولة',
+  s2d:'«هل نفتح فرعاً في جدة؟» «نخفّض الأسعار ٢٠٪؟» اسأل ما تشاء — الرئيس يوضّح الغامض قبل عقد الجلسة.',
+  s3t:'تابع النقاش واستلم القرار',
+  s3d:'المستشارون يتناقشون مباشرة، ويمكنك المقاطعة بمعلومة أثناء النقاش. ثم يصوغ الرئيس كل شيء في توصية نهائية.',
+  bh2:'المجلس بانتظارك.',
+  bp:'عرّفهم على عملك مرة واحدة — وكل إجابة بعدها تتحدث بلغة عملك.',
+  bCta:'ابدأ الآن',
+  mTitle:'تتخطى الإعداد؟',
+  mBody:'لم يتعرّف مستشاروك على عملك بعد. بدون معلومات شركتك، <b>لن يجيب المجلس جيداً</b> — ستكون نصائحه تخمينات عامة بدلاً من توصيات مفصّلة لعملك.',
+  mNote:'يمكنك دائماً إضافة معلومات شركتك أو تعديلها لاحقاً من داخل المجلس.',
+  mSetup:'جهّز مجلسي (موصى به)',
+  mSkip:'تخطَّ على أي حال — خذني إلى المجلس',
+};
+const EN = {}; // English lives in the markup; AR overrides it.
+document.querySelectorAll('[data-i18n]').forEach(el => { EN[el.getAttribute('data-i18n')] = el.innerHTML; });
+EN.langBtn = 'العربية';
+
+let lang = localStorage.getItem('boardroom.lang') || 'en';
+function applyLang(){
+  const d = lang === 'ar' ? AR : EN;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (d[k] != null) el.innerHTML = d[k];
+  });
+  document.getElementById('lang-toggle').textContent = d.langBtn;
+}
+function toggleLang(){
+  lang = lang === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('boardroom.lang', lang);
+  applyLang();
+}
+applyLang();
+
 function openSkipModal(){ document.getElementById('skip-modal').classList.add('open'); }
 function closeSkipModal(){ document.getElementById('skip-modal').classList.remove('open'); }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSkipModal(); });
