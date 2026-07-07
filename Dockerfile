@@ -22,8 +22,9 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Backend source + onboarding page + docs folder for RAG uploads
+# Backend source + home/onboarding pages + docs folder for RAG uploads
 COPY src/ ./src/
+COPY frontend/home.html ./frontend/home.html
 COPY frontend/onboarding.html ./frontend/onboarding.html
 COPY documents/ ./documents/
 
