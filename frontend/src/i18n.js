@@ -139,6 +139,42 @@ export const UI = {
   legTension: { en: "Mild tension", ar: "توتر خفيف" },
   legAlign: { en: "Alignment", ar: "توافق" },
 
+  // company profile (add / edit from the app)
+  profileBtnAdd: { en: "Add company info", ar: "أضف معلومات الشركة" },
+  profileBtnEdit: { en: "Company info", ar: "معلومات الشركة" },
+  profileTitle: { en: "Your company info", ar: "معلومات شركتك" },
+  profileLede: {
+    en: "This is what the board knows about your business. The more you share, the sharper the advice.",
+    ar: "هذا ما يعرفه المجلس عن عملك. كلما شاركت أكثر، كانت النصيحة أدق.",
+  },
+  profileMissing: {
+    en: "The board has no info about your company yet — without it, answers will be generic and far less useful.",
+    ar: "لا يملك المجلس أي معلومات عن شركتك بعد — بدونها ستكون الإجابات عامة وأقل فائدة بكثير.",
+  },
+  profileName: { en: "Company name", ar: "اسم الشركة" },
+  profileCity: { en: "City", ar: "المدينة" },
+  profileIndustry: { en: "Industry", ar: "القطاع" },
+  profileDescription: { en: "What does your business do?", ar: "ماذا يعمل نشاطك التجاري؟" },
+  profileTeam: { en: "Team size", ar: "حجم الفريق" },
+  profileRevenue: { en: "Monthly revenue", ar: "الإيراد الشهري" },
+  profileRisk: { en: "Risk tolerance", ar: "تحمّل المخاطر" },
+  profileChallenges: {
+    en: "Current challenges (comma-separated)",
+    ar: "التحديات الحالية (مفصولة بفواصل)",
+  },
+  profileSelect: { en: "Select…", ar: "اختر…" },
+  riskConservative: { en: "Conservative", ar: "متحفّظ" },
+  riskModerate: { en: "Moderate", ar: "متوازن" },
+  riskAggressive: { en: "Aggressive", ar: "جريء" },
+  profileSave: { en: "Save info", ar: "حفظ المعلومات" },
+  profileSaving: { en: "Saving…", ar: "جارٍ الحفظ…" },
+  profileCancel: { en: "Cancel", ar: "إلغاء" },
+  profileError: {
+    en: "Couldn't save — is the API server running?",
+    ar: "تعذّر الحفظ — هل سيرفر الـAPI شغّال؟",
+  },
+  profileFullSetup: { en: "Run the full setup instead", ar: "شغّل الإعداد الكامل بدلاً من ذلك" },
+
   langToggle: { en: "العربية", ar: "English" },
   footer: { en: "AI BOARD ROOM · Hackathon 2026", ar: "AI BOARD ROOM · هاكاثون ٢٠٢٦" },
 };

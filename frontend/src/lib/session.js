@@ -194,6 +194,25 @@ export async function runVerdict(decision, lang, context, round1, round2) {
   return normVerdict(await res.json());
 }
 
+// ── company profile (what the board is briefed with) ────────────────────────
+export async function fetchProfile() {
+  const res = await fetch(`${API_BASE}/profile`);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  const d = await res.json();
+  return d.profile ?? null;
+}
+
+export async function saveProfile(profile) {
+  const res = await fetch(`${API_BASE}/profile`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(profile),
+  });
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  const d = await res.json();
+  return d.profile ?? profile;
+}
+
 // ── persistence ────────────────────────────────────────────────────────────
 export function loadSaved() {
   try {

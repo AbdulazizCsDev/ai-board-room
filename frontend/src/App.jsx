@@ -14,6 +14,8 @@ import {
   deleteSaved,
   downloadSession,
   readSessionFile,
+  fetchProfile,
+  saveProfile,
 } from "./lib/session.js";
 import {
   IconGavel,
@@ -39,6 +41,9 @@ import {
   IconCheck,
   IconBulb,
   IconSend,
+  IconBuilding,
+  IconX,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 
 // Auto-advance dwell per contribution, scaled to reading time.
@@ -87,6 +92,26 @@ export default function App() {
   // live: { decision, context } while a live run is in progress; null for replay.
   const [live, setLive] = useState(null);
 
+  // Company profile the board is briefed with (null until added).
+  const [profile, setProfile] = useState(null);
+  const [profileKnown, setProfileKnown] = useState(false); // GET /profile answered
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  useEffect(() => {
+    fetchProfile()
+      .then((p) => {
+        setProfile(p);
+        setProfileKnown(true);
+      })
+      .catch(() => {}); // API down — keep the button in its neutral state
+  }, []);
+
+  const handleProfileSave = async (payload) => {
+    const saved = await saveProfile(payload);
+    setProfile(saved);
+    setProfileKnown(true);
+  };
+
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
@@ -107,7 +132,25 @@ export default function App() {
 
   return (
     <div className="app">
-      <Topbar t={t} tab={tab} setTab={setTab} lang={lang} setLang={setLang} />
+      <Topbar
+        t={t}
+        tab={tab}
+        setTab={setTab}
+        lang={lang}
+        setLang={setLang}
+        hasProfile={!!profile}
+        profileKnown={profileKnown}
+        onProfile={() => setProfileOpen(true)}
+      />
+
+      {profileOpen && (
+        <ProfileModal
+          t={t}
+          profile={profile}
+          onSave={handleProfileSave}
+          onClose={() => setProfileOpen(false)}
+        />
+      )}
 
       <main className="panel">
         {tab === "convene" && (
@@ -152,7 +195,8 @@ export default function App() {
 }
 
 // ── Top bar ──────────────────────────────────────────────────────────────────
-function Topbar({ t, tab, setTab, lang, setLang }) {
+function Topbar({ t, tab, setTab, lang, setLang, hasProfile, profileKnown, onProfile }) {
+  const missing = profileKnown && !hasProfile;
   return (
     <div className="topbar">
       <div className="brand">
@@ -173,12 +217,149 @@ function Topbar({ t, tab, setTab, lang, setLang }) {
           </button>
         ))}
       </div>
-      <button
-        className="lang-toggle"
-        onClick={() => setLang((l) => (l === "en" ? "ar" : "en"))}
-      >
-        {UI.langToggle[lang]}
-      </button>
+      <div className="topbar-side">
+        <button
+          className={"profile-btn" + (missing ? " missing" : "")}
+          onClick={onProfile}
+          title={t(missing ? UI.profileBtnAdd : UI.profileBtnEdit)}
+        >
+          <IconBuilding size={15} />
+          <span>{t(missing ? UI.profileBtnAdd : UI.profileBtnEdit)}</span>
+          {missing && <span className="profile-dot" />}
+        </button>
+        <button
+          className="lang-toggle"
+          onClick={() => setLang((l) => (l === "en" ? "ar" : "en"))}
+        >
+          {UI.langToggle[lang]}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Company profile add / edit modal ─────────────────────────────────────────
+const TEAM_SIZES = ["1–10 employees", "11–50 employees", "51–200 employees", "200+ employees"];
+
+function ProfileModal({ t, profile, onSave, onClose }) {
+  const [form, setForm] = useState(() => ({
+    business_name: profile?.business_name || "",
+    city: profile?.city || "",
+    industry: profile?.industry || "",
+    description: profile?.description || "",
+    team_size: profile?.team_size || "",
+    revenue: profile?.revenue || "",
+    risk_tolerance: profile?.risk_tolerance || "",
+  }));
+  const [challenges, setChallenges] = useState((profile?.challenges || []).join(", "));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const submit = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      await onSave({
+        ...(profile || {}),
+        ...form,
+        challenges: challenges.split(/[,،]/).map((s) => s.trim()).filter(Boolean),
+      });
+      onClose();
+    } catch {
+      setError(t(UI.profileError));
+      setBusy(false);
+    }
+  };
+
+  const risks = [
+    ["conservative", UI.riskConservative],
+    ["moderate", UI.riskModerate],
+    ["aggressive", UI.riskAggressive],
+  ];
+
+  return (
+    <div className="pmodal-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="pmodal">
+        <div className="pmodal-head">
+          <div className="pmodal-titles">
+            <h3 className="pmodal-title display">{t(UI.profileTitle)}</h3>
+            <p className="pmodal-lede">{t(UI.profileLede)}</p>
+          </div>
+          <button className="pmodal-close" onClick={onClose} title={t(UI.profileCancel)}>
+            <IconX size={18} />
+          </button>
+        </div>
+
+        {!profile && (
+          <div className="pmodal-warning">
+            <IconAlertTriangle size={17} />
+            <span>{t(UI.profileMissing)}</span>
+          </div>
+        )}
+
+        <div className="pform-grid">
+          <label className="pfield">
+            <span className="pfield-label">{t(UI.profileName)}</span>
+            <input className="pfield-input" value={form.business_name} onChange={set("business_name")} />
+          </label>
+          <label className="pfield">
+            <span className="pfield-label">{t(UI.profileCity)}</span>
+            <input className="pfield-input" value={form.city} onChange={set("city")} />
+          </label>
+          <label className="pfield wide">
+            <span className="pfield-label">{t(UI.profileIndustry)}</span>
+            <input className="pfield-input" value={form.industry} onChange={set("industry")} />
+          </label>
+          <label className="pfield wide">
+            <span className="pfield-label">{t(UI.profileDescription)}</span>
+            <textarea className="pfield-input" rows={2} value={form.description} onChange={set("description")} />
+          </label>
+          <label className="pfield">
+            <span className="pfield-label">{t(UI.profileTeam)}</span>
+            <select className="pfield-input" value={form.team_size} onChange={set("team_size")}>
+              <option value="">{t(UI.profileSelect)}</option>
+              {TEAM_SIZES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </label>
+          <label className="pfield">
+            <span className="pfield-label">{t(UI.profileRevenue)}</span>
+            <input className="pfield-input" placeholder="300,000 SAR" value={form.revenue} onChange={set("revenue")} />
+          </label>
+          <label className="pfield">
+            <span className="pfield-label">{t(UI.profileRisk)}</span>
+            <select className="pfield-input" value={form.risk_tolerance} onChange={set("risk_tolerance")}>
+              <option value="">{t(UI.profileSelect)}</option>
+              {risks.map(([v, label]) => (
+                <option key={v} value={v}>{t(label)}</option>
+              ))}
+            </select>
+          </label>
+          <label className="pfield wide">
+            <span className="pfield-label">{t(UI.profileChallenges)}</span>
+            <input
+              className="pfield-input"
+              placeholder="Cash flow, Competition, Hiring…"
+              value={challenges}
+              onChange={(e) => setChallenges(e.target.value)}
+            />
+          </label>
+        </div>
+
+        {error && <p className="error-msg">{error}</p>}
+
+        <div className="pmodal-actions">
+          <button className="convene-btn pmodal-save" onClick={submit} disabled={busy}>
+            {busy ? <IconLoader2 size={17} className="spin" /> : <IconDeviceFloppy size={17} />}
+            {t(busy ? UI.profileSaving : UI.profileSave)}
+          </button>
+          <button className="ghost-btn" onClick={onClose}>{t(UI.profileCancel)}</button>
+          <a className="pmodal-fullsetup" href="/onboarding">{t(UI.profileFullSetup)} →</a>
+        </div>
+      </div>
     </div>
   );
 }

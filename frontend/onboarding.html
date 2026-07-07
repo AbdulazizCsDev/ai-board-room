@@ -201,6 +201,57 @@ body{
 .btn-back i{font-size:15px}
 .skip-link{font-size:13px;color:var(--ink-faint);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .skip-link:hover{color:var(--ink-soft)}
+.topbar-skip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:none;border:1px solid var(--line);color:var(--ink-soft);
+  padding:8px 16px;border-radius:30px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:13px;transition:all 0.15s;
+}
+.topbar-skip:hover{border-color:var(--ink-faint);color:var(--ink)}
+.topbar-skip i{font-size:15px}
+
+/* ── Skip warning modal ── */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(22,24,29,0.45);
+  display:none;align-items:center;justify-content:center;
+  z-index:100;padding:20px;
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+}
+.modal-backdrop.open{display:flex;animation:fadeIn 0.2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:30px;max-width:440px;width:100%;
+  box-shadow:0 24px 70px rgba(22,24,29,0.25);
+  animation:popIn 0.3s cubic-bezier(0.16,1,0.3,1);
+  text-align:center;
+}
+@keyframes popIn{from{opacity:0;transform:translateY(14px) scale(0.98)}to{opacity:1;transform:none}}
+.modal-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:#f7eed8;color:#9a6810;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+}
+.modal-icon i{font-size:26px}
+.modal h3{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:10px}
+.modal p{font-size:14px;color:var(--ink-soft);line-height:1.65;margin-bottom:8px}
+.modal .modal-note{font-size:12.5px;color:var(--ink-faint);margin-bottom:22px}
+.modal-actions{display:flex;flex-direction:column;gap:10px}
+.btn-modal-stay{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--ink);color:var(--bg);
+  border:none;padding:14px 26px;border-radius:30px;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;
+  transition:transform 0.15s;
+}
+.btn-modal-stay:hover{transform:translateY(-1px)}
+.btn-skip-anyway{
+  background:none;border:1px solid var(--line);color:var(--ink-soft);
+  padding:12px 26px;border-radius:30px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:13.5px;transition:all 0.15s;
+}
+.btn-skip-anyway:hover{border-color:var(--ink-faint);color:var(--ink)}
 
 /* ── Upload screen ── */
 .upload-zone{
@@ -366,7 +417,10 @@ body{
     <div class="brand-mark"><i class="ti ti-gavel"></i></div>
     <div class="brand-name">Board<span>room</span></div>
   </div>
-  <div class="topbar-right">Setting up your board</div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span class="topbar-right">Setting up your board</span>
+    <button class="topbar-skip" onclick="openSkipModal()">Skip for now <i class="ti ti-player-skip-forward"></i></button>
+  </div>
 </div>
 
 <div class="shell">
@@ -649,6 +703,24 @@ body{
 
 </div>
 
+<!-- ── Skip warning modal ── -->
+<div class="modal-backdrop" id="skip-modal" onclick="if(event.target===this)closeSkipModal()">
+  <div class="modal">
+    <div class="modal-icon"><i class="ti ti-alert-triangle"></i></div>
+    <h3>Skip the setup?</h3>
+    <p>
+      Your advisors haven't been briefed yet. Without your company information,
+      the board <b>won't respond well</b> — its advice will be generic guesses
+      instead of recommendations tailored to your business.
+    </p>
+    <p class="modal-note">You can always add or edit your company info later from the boardroom.</p>
+    <div class="modal-actions">
+      <button class="btn-modal-stay" onclick="closeSkipModal()"><i class="ti ti-users"></i> Keep setting up (recommended)</button>
+      <button class="btn-skip-anyway" onclick="window.location.href=APP_URL">Skip anyway — take me to the boardroom</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const TOTAL = 7;
 const answers = {q1_name:'',q1_what:'',q2:'',q3a:'',q3_city:'',revenue:'300,000 SAR',q5:'',q6:[],q7:'',docs:0};
@@ -855,6 +927,10 @@ function buildProfile(){
   document.getElementById('pf-risk').textContent=answers.q5||'Moderate';
   document.getElementById('pf-docs').textContent=answers.docs>0?answers.docs+' uploaded':'None';
 }
+
+function openSkipModal(){ document.getElementById('skip-modal').classList.add('open'); }
+function closeSkipModal(){ document.getElementById('skip-modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSkipModal(); });
 
 buildDots();
 </script>

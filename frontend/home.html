@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Board Room — Your AI board of advisors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f4ec;
+  --bg-warm:#f1ece1;
+  --card:#fffdf9;
+  --ink:#16181d;
+  --ink-soft:#474d5a;
+  --ink-faint:#8b909e;
+  --line:#e6e0d3;
+  --line-soft:#efeae0;
+  --legal:#0f7a5e;     --legal-bg:#e4f2ec;
+  --finance:#1f5fa8;   --finance-bg:#e7f0fa;
+  --market:#6f4bce;    --market-bg:#eee9fa;
+  --customer:#c5512a;  --customer-bg:#faeae1;
+  --warn:#9a6810;      --warn-bg:#f7eed8;
+  --r:16px; --r-sm:11px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── Top bar (identical to boardroom-app) ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 40px 18px;
+  background:linear-gradient(var(--bg) 72%,rgba(247,244,236,0));
+  position:sticky;top:0;z-index:50;
+}
+.brand{display:flex;align-items:center;gap:11px}
+.brand-mark{
+  width:36px;height:36px;border-radius:11px;
+  background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--bg)
+}
+.brand-mark i{font-size:20px}
+.brand-name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-0.01em}
+.brand-name span{font-style:italic;font-weight:400;color:var(--ink-soft)}
+.topbar-cta{
+  display:inline-flex;align-items:center;gap:7px;
+  background:none;border:1px solid var(--line);color:var(--ink-soft);
+  padding:9px 18px;border-radius:30px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+  transition:all 0.15s;text-decoration:none;
+}
+.topbar-cta:hover{border-color:var(--ink-faint);color:var(--ink)}
+
+/* ── Hero ── */
+.shell{max-width:960px;margin:0 auto;padding:20px 24px 80px;flex:1;width:100%}
+.hero{text-align:center;padding:38px 0 20px}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;
+  text-transform:uppercase;color:var(--market);margin-bottom:18px;
+  display:inline-flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before,.hero-eyebrow::after{
+  content:'';width:24px;height:2px;background:var(--market);border-radius:1px;
+}
+.hero h1{
+  font-family:'Fraunces',serif;
+  font-size:clamp(38px,7vw,64px);
+  font-weight:500;line-height:1.08;letter-spacing:-0.02em;
+  margin-bottom:20px;
+}
+.hero h1 em{font-style:italic;color:var(--ink-soft)}
+.hero .lede{
+  font-size:18px;color:var(--ink-soft);max-width:560px;margin:0 auto 34px;
+}
+
+/* advisors row */
+.advisor-row{display:flex;justify-content:center;gap:26px;margin-bottom:38px;flex-wrap:wrap}
+.advisor-mini{display:flex;flex-direction:column;align-items:center;gap:8px}
+.advisor-mini .ring{
+  border-radius:50%;overflow:hidden;border:2.5px solid var(--card);
+  box-shadow:0 3px 14px rgba(0,0,0,0.1);
+  transition:transform 0.25s;
+}
+.advisor-mini:hover .ring{transform:translateY(-4px)}
+.advisor-mini span{font-size:12px;color:var(--ink-soft);font-weight:500}
+
+/* CTA block */
+.cta-block{display:flex;flex-direction:column;align-items:center;gap:14px}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--ink);color:var(--bg);
+  border:none;padding:17px 36px;border-radius:34px;
+  font-family:'Inter',sans-serif;font-size:16px;font-weight:500;
+  cursor:pointer;transition:transform 0.15s;text-decoration:none;
+}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-primary i{font-size:19px}
+.cta-sub{font-size:13px;color:var(--ink-faint)}
+.skip-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:none;border:none;cursor:pointer;
+  color:var(--ink-faint);font-family:'Inter',sans-serif;font-size:14px;
+  text-decoration:underline;text-underline-offset:3px;
+  padding:4px 8px;transition:color 0.15s;
+}
+.skip-btn:hover{color:var(--ink-soft)}
+
+/* ── Feature cards ── */
+.features{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin:56px 0 0;
+}
+@media (max-width:720px){.features{grid-template-columns:1fr}}
+.feat{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:24px;text-align:start;
+  box-shadow:0 1px 2px rgba(0,0,0,0.03);
+  transition:transform 0.25s,box-shadow 0.25s;
+}
+.feat:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(22,24,29,0.08)}
+.feat-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+.feat-icon i{font-size:22px}
+.feat.f-debate .feat-icon{background:var(--market-bg);color:var(--market)}
+.feat.f-verdict .feat-icon{background:var(--legal-bg);color:var(--legal)}
+.feat.f-tension .feat-icon{background:var(--customer-bg);color:var(--customer)}
+.feat h3{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin-bottom:6px}
+.feat p{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+
+/* ── How it works ── */
+.how{margin-top:64px;text-align:center}
+.how-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--legal);margin-bottom:12px;
+}
+.how h2{
+  font-family:'Fraunces',serif;font-size:clamp(26px,4vw,36px);
+  font-weight:500;letter-spacing:-0.015em;margin-bottom:34px;
+}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:start}
+@media (max-width:720px){.steps{grid-template-columns:1fr}}
+.step{
+  background:var(--bg-warm);border:1px solid var(--line);border-radius:var(--r);
+  padding:22px;position:relative;
+}
+.step-num{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--ink);color:var(--bg);
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+.step h4{font-family:'Fraunces',serif;font-size:16.5px;font-weight:600;margin-bottom:5px}
+.step p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+
+/* bottom CTA */
+.bottom-cta{
+  margin-top:64px;text-align:center;
+  background:var(--ink);color:var(--bg);
+  border-radius:var(--r);padding:44px 28px;
+  position:relative;overflow:hidden;
+}
+.bottom-cta::after{
+  content:"";position:absolute;right:-50px;top:-50px;width:200px;height:200px;
+  border-radius:50%;background:rgba(247,244,236,0.05);
+}
+.bottom-cta h2{
+  font-family:'Fraunces',serif;font-size:clamp(24px,4vw,34px);
+  font-weight:500;letter-spacing:-0.015em;margin-bottom:8px;position:relative;
+}
+.bottom-cta p{font-size:15px;color:rgba(247,244,236,0.7);margin-bottom:26px;position:relative}
+.btn-invert{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--bg);color:var(--ink);
+  border:none;padding:15px 32px;border-radius:32px;
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;transition:transform 0.15s;text-decoration:none;position:relative;
+}
+.btn-invert:hover{transform:translateY(-2px)}
+
+/* ── Skip warning modal ── */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(22,24,29,0.45);
+  display:none;align-items:center;justify-content:center;
+  z-index:100;padding:20px;
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+}
+.modal-backdrop.open{display:flex;animation:fadeIn 0.2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:30px;max-width:440px;width:100%;
+  box-shadow:0 24px 70px rgba(22,24,29,0.25);
+  animation:popIn 0.3s cubic-bezier(0.16,1,0.3,1);
+  text-align:center;
+}
+@keyframes popIn{from{opacity:0;transform:translateY(14px) scale(0.98)}to{opacity:1;transform:none}}
+.modal-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:var(--warn-bg);color:var(--warn);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+}
+.modal-icon i{font-size:26px}
+.modal h3{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:10px}
+.modal p{font-size:14px;color:var(--ink-soft);line-height:1.65;margin-bottom:8px}
+.modal .modal-note{font-size:12.5px;color:var(--ink-faint);margin-bottom:22px}
+.modal-actions{display:flex;flex-direction:column;gap:10px}
+.modal-actions .btn-primary{justify-content:center;padding:14px 26px;font-size:14px}
+.btn-skip-anyway{
+  background:none;border:1px solid var(--line);color:var(--ink-soft);
+  padding:12px 26px;border-radius:30px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:13.5px;transition:all 0.15s;
+}
+.btn-skip-anyway:hover{border-color:var(--ink-faint);color:var(--ink)}
+
+/* ── Footer ── */
+.foot{
+  text-align:center;padding:26px 0;color:var(--ink-faint);font-size:12px;
+  border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;
+}
+</style>
+</head>
+<body>
+
+<!-- SVG character definitions (same as onboarding) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="char-legal" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50" fill="#e4f2ec"/>
+      <path d="M22 100 Q22 74 50 74 Q78 74 78 100 Z" fill="#0f7a5e"/>
+      <path d="M40 72 h20 v8 q-10 6 -20 0 Z" fill="#e8b894"/>
+      <ellipse cx="50" cy="50" rx="19" ry="22" fill="#e8b894"/>
+      <path d="M30 44 Q30 24 50 24 Q70 24 70 44 Q70 36 50 34 Q30 36 30 44 Z" fill="#b8b3a8"/>
+      <rect x="34" y="47" width="13" height="10" rx="5" fill="none" stroke="#0a4f3d" stroke-width="1.6"/>
+      <rect x="53" y="47" width="13" height="10" rx="5" fill="none" stroke="#0a4f3d" stroke-width="1.6"/>
+      <line x1="47" y1="51" x2="53" y2="51" stroke="#0a4f3d" stroke-width="1.6"/>
+      <circle cx="40.5" cy="52" r="2" fill="#16181d"/>
+      <circle cx="59.5" cy="52" r="2" fill="#16181d"/>
+      <path d="M44 64 Q50 62 56 64" stroke="#9c6b4a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="char-finance" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50" fill="#e7f0fa"/>
+      <path d="M22 100 Q22 74 50 74 Q78 74 78 100 Z" fill="#1f5fa8"/>
+      <path d="M40 72 h20 v8 q-10 6 -20 0 Z" fill="#d9a273"/>
+      <path d="M50 74 L45 80 L50 100 L55 80 Z" fill="#0c4178"/>
+      <ellipse cx="50" cy="50" rx="19" ry="22" fill="#d9a273"/>
+      <path d="M31 42 Q31 25 50 25 Q69 25 69 42 L66 40 Q64 32 50 32 Q36 32 34 40 Z" fill="#2b2620"/>
+      <circle cx="41" cy="51" r="2.1" fill="#16181d"/>
+      <circle cx="59" cy="51" r="2.1" fill="#16181d"/>
+      <path d="M44 64 L56 63" stroke="#9c6b4a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="char-market" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50" fill="#eee9fa"/>
+      <path d="M22 100 Q22 73 50 73 Q78 73 78 100 Z" fill="#6f4bce"/>
+      <path d="M40 71 h20 v8 q-10 6 -20 0 Z" fill="#f0c39a"/>
+      <ellipse cx="50" cy="49" rx="19" ry="22" fill="#f0c39a"/>
+      <path d="M30 46 Q28 22 50 22 Q72 22 70 46 Q68 30 58 28 Q56 24 48 26 Q38 26 36 32 Q31 34 30 46 Z" fill="#3a2f1a"/>
+      <circle cx="41" cy="50" r="2.2" fill="#16181d"/>
+      <circle cx="59" cy="50" r="2.2" fill="#16181d"/>
+      <path d="M42 61 Q50 69 58 61 Q50 64 42 61 Z" fill="#9c4a3a"/>
+    </symbol>
+    <symbol id="char-customer" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50" fill="#faeae1"/>
+      <path d="M22 100 Q22 73 50 73 Q78 73 78 100 Z" fill="#c5512a"/>
+      <path d="M40 71 h20 v8 q-10 6 -20 0 Z" fill="#c98a5e"/>
+      <ellipse cx="50" cy="49" rx="19" ry="22" fill="#c98a5e"/>
+      <path d="M31 44 Q31 23 50 23 Q69 23 69 44 Q66 30 50 30 Q34 30 31 44 Z" fill="#1f1812"/>
+      <circle cx="41" cy="50" r="2.2" fill="#16181d"/>
+      <circle cx="59" cy="50" r="2.2" fill="#16181d"/>
+      <path d="M42 61 Q50 68 58 61" stroke="#9c4a3a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10l7.383 7.418c.823 .82 .823 2.148 0 2.967a2.11 2.11 0 0 1 -2.976 0l-7.407 -7.385"/><path d="M6 9l4 4"/><path d="M13 10l-4 -4"/><path d="M3 21h7"/><path d="M6.793 15.793l-3.586 -3.586a1 1 0 0 1 0 -1.414l2.293 -2.293l.5 .5l3 -3l-.5 -.5l2.293 -2.293a1 1 0 0 1 1.414 0l3.586 3.586a1 1 0 0 1 0 1.414l-2.293 2.293l-.5 -.5l-3 3l.5 .5l-2.293 2.293a1 1 0 0 1 -1.414 0"/></svg></div>
+    <div class="brand-name">Board<span>room</span></div>
+  </div>
+  <button class="topbar-cta" onclick="openSkipModal()">
+    Skip to the boardroom <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg>
+  </button>
+</div>
+
+<div class="shell">
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-eyebrow">Your AI board of advisors</div>
+    <h1>Every leader deserves<br><em>a board.</em></h1>
+    <p class="lede">
+      Describe a business decision. Your AI advisors analyze it from every angle,
+      argue it out in a live debate, and hand you a clear, reasoned verdict.
+    </p>
+
+    <div class="advisor-row">
+      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-legal"/></svg><span>Legal</span></div>
+      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-finance"/></svg><span>Finance</span></div>
+      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-market"/></svg><span>Marketing</span></div>
+      <div class="advisor-mini"><svg class="ring" width="66" height="66"><use href="#char-customer"/></svg><span>Customer</span></div>
+    </div>
+
+    <div class="cta-block">
+      <a class="btn-primary" href="/onboarding">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg> Set up my board
+      </a>
+      <span class="cta-sub">Takes about 2 minutes — your advisors learn your business first.</span>
+      <button class="skip-btn" onclick="openSkipModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5v14l12 -7l-12 -7"/><path d="M20 5l0 14"/></svg> Skip the setup for now
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="features">
+    <div class="feat f-debate">
+      <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"/><path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2"/></svg></div>
+      <h3>A real debate</h3>
+      <p>Advisors don't just answer — they challenge each other across two rounds, so weak arguments get exposed before you act.</p>
+    </div>
+    <div class="feat f-verdict">
+      <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4l4 -6"/></svg></div>
+      <h3>A clear verdict</h3>
+      <p>The chairman weighs every lens and rules: proceed, don't, or proceed with conditions — with confidence and next steps.</p>
+    </div>
+    <div class="feat f-tension">
+      <div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.931 6.936l1.275 4.249m5.607 5.609l4.251 1.275"/><path d="M11.683 12.317l5.759 -5.759"/><path d="M4 5.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M17 5.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M17 18.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M4 15.5a4.5 4.5 0 1 0 9 0a4.5 4.5 0 1 0 -9 0"/></svg></div>
+      <h3>The tension map</h3>
+      <p>See exactly where finance, legal, and market pull against each other — the friction that makes the decision hard.</p>
+    </div>
+  </section>
+
+  <!-- ── How it works ── -->
+  <section class="how">
+    <div class="how-eyebrow">How it works</div>
+    <h2>From question to verdict in minutes</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Brief your board</h4>
+        <p>Answer a few quick questions about your company — industry, size, revenue, challenges. Upload documents for advice grounded in your real numbers.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Put a decision on the table</h4>
+        <p>"Should we open a branch in Jeddah?" "Cut prices 20%?" Ask anything — the chairman clarifies what's vague before convening.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Watch the debate, get the call</h4>
+        <p>Advisors argue it out live. You can interject with facts mid-debate. The chairman synthesizes everything into a final recommendation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Bottom CTA ── -->
+  <section class="bottom-cta">
+    <h2>The board is waiting.</h2>
+    <p>Brief them once — every answer after that speaks your business.</p>
+    <a class="btn-invert" href="/onboarding"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg> Get started</a>
+  </section>
+
+</div>
+
+<footer class="foot">AI BOARD ROOM · Hackathon 2026</footer>
+
+<!-- ── Skip warning modal ── -->
+<div class="modal-backdrop" id="skip-modal" onclick="if(event.target===this)closeSkipModal()">
+  <div class="modal">
+    <div class="modal-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0"/><path d="M12 16h.01"/></svg></div>
+    <h3>Skip the setup?</h3>
+    <p>
+      Your advisors haven't been briefed yet. Without your company information,
+      the board <b>won't respond well</b> — its advice will be generic guesses
+      instead of recommendations tailored to your business.
+    </p>
+    <p class="modal-note">You can always add or edit your company info later from the boardroom.</p>
+    <div class="modal-actions">
+      <a class="btn-primary" href="/onboarding"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg> Set up my board (recommended)</a>
+      <button class="btn-skip-anyway" onclick="window.location.href=APP_URL">Skip anyway — take me to the boardroom</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Same-origin by default; override via window.__APP_BASE__ when hosted separately.
+const APP_URL = ((typeof window !== 'undefined' && window.__APP_BASE__) || '') + '/app';
+function openSkipModal(){ document.getElementById('skip-modal').classList.add('open'); }
+function closeSkipModal(){ document.getElementById('skip-modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSkipModal(); });
+</script>
+</body>
+</html>

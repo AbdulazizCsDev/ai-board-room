@@ -4,13 +4,16 @@ Single-port app: serves the built React UI AND the API.
 
     GET  /health              — liveness check
     POST /onboard             — save company profile + PDFs, build RAG index
+    GET  /profile             — current company profile (null if not set)
+    POST /profile             — update the profile only (docs untouched)
     POST /board/run           — run board (uses session profile + RAG)
     GET  /api/health          — liveness check (presentation UI)
     POST /api/discover        — chairman discovery questions (empty if decision is clear)
     POST /api/round           — SSE; one round, streams each advisor as it lands
     POST /api/verdict         — the chairman's synthesis
     POST /api/board           — one-shot full run (export / quick path)
-    GET  /                    — onboarding page
+    GET  /                    — home / landing page
+    GET  /onboarding          — onboarding form
     GET  /app, /app/*         — the built React board UI
 
 Run it:
@@ -174,6 +177,19 @@ async def onboard(
     }
 
 
+@app.get("/profile")
+def get_profile():
+    """The company profile the board is briefed with (null when not set)."""
+    return {"profile": _session.get("profile")}
+
+
+@app.post("/profile")
+def update_profile(profile: dict):
+    """Add or edit the company profile from the app, leaving uploaded docs alone."""
+    _session["profile"] = profile or None
+    return {"status": "ok", "profile": _session["profile"]}
+
+
 @app.post("/board/run", response_model=BoardResult)
 def board_run(body: RunRequest):
     """Run a board debate using the current session profile and RAG context."""
@@ -256,6 +272,11 @@ FRONTEND_DIR = FRONTEND_DIST.parent  # frontend/
 
 @app.get("/", include_in_schema=False)
 async def root():
+    return FileResponse(str(FRONTEND_DIR / "home.html"))
+
+
+@app.get("/onboarding", include_in_schema=False)
+async def onboarding_page():
     return FileResponse(str(FRONTEND_DIR / "onboarding.html"))
 
 

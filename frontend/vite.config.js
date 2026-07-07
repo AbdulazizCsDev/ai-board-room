@@ -13,6 +13,7 @@ export default defineConfig({
     proxy: {
       "/api":     "http://localhost:8000",
       "/onboard": "http://localhost:8000",
+      "/profile": "http://localhost:8000",
       "/board":   "http://localhost:8000",
       "/health":  "http://localhost:8000",
     },
