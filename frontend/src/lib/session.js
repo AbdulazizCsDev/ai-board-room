@@ -213,6 +213,28 @@ export async function saveProfile(profile) {
   return d.profile ?? profile;
 }
 
+// Browser-side cache: shared with the onboarding page (same key), so a
+// profile saved there is remembered here even if the server's in-memory
+// session was reset in between (cold start, redeploy, free-tier spin-down).
+const PROFILE_CACHE_KEY = "boardroom.profile";
+
+export function loadCachedProfile() {
+  try {
+    return JSON.parse(localStorage.getItem(PROFILE_CACHE_KEY) || "null");
+  } catch {
+    return null;
+  }
+}
+
+export function cacheProfile(profile) {
+  try {
+    if (profile) localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(profile));
+    else localStorage.removeItem(PROFILE_CACHE_KEY);
+  } catch {
+    // storage unavailable (private mode, quota) — the server round-trip still works
+  }
+}
+
 // ── persistence ────────────────────────────────────────────────────────────
 export function loadSaved() {
   try {

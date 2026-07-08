@@ -65,8 +65,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Profile survives a process restart (though not a fresh container on hosts
+# with no persistent disk — the browser-side cache in lib/session.js covers that).
+PROFILE_FILE = DOCUMENTS_DIR / "profile.json"
+
+
+def _load_profile() -> dict | None:
+    if not PROFILE_FILE.exists():
+        return None
+    try:
+        return json.loads(PROFILE_FILE.read_text(encoding="utf-8")) or None
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
+def _save_profile(profile: dict | None) -> None:
+    DOCUMENTS_DIR.mkdir(parents=True, exist_ok=True)
+    if profile:
+        PROFILE_FILE.write_text(json.dumps(profile, ensure_ascii=False), encoding="utf-8")
+    elif PROFILE_FILE.exists():
+        PROFILE_FILE.unlink()
+
+
 # ── In-memory session (single-user MVP) ──────────────────────────────────────
-_session: dict = {"profile": None, "retriever": build_retriever()}  # load on startup if docs exist
+_session: dict = {"profile": _load_profile(), "retriever": build_retriever()}  # load on startup if docs exist
 
 _LANGUAGES = {"ar": "Arabic", "en": "English"}
 
@@ -155,19 +177,21 @@ async def onboard(
         raise HTTPException(status_code=400, detail="profile must be valid JSON")
 
     _session["profile"] = profile_data
+    _save_profile(profile_data)
 
-    for old in DOCUMENTS_DIR.glob("*.pdf"):
-        old.unlink()
-
+    # Editing the profile without touching the upload step shouldn't wipe
+    # documents that were already saved from an earlier onboarding run.
     saved = []
-    for upload in files:
-        if upload.filename and upload.filename.lower().endswith(".pdf"):
-            dest = DOCUMENTS_DIR / upload.filename
-            with dest.open("wb") as f:
-                shutil.copyfileobj(upload.file, f)
-            saved.append(upload.filename)
-
-    _session["retriever"] = build_retriever()
+    if files:
+        for old in DOCUMENTS_DIR.glob("*.pdf"):
+            old.unlink()
+        for upload in files:
+            if upload.filename and upload.filename.lower().endswith(".pdf"):
+                dest = DOCUMENTS_DIR / upload.filename
+                with dest.open("wb") as f:
+                    shutil.copyfileobj(upload.file, f)
+                saved.append(upload.filename)
+        _session["retriever"] = build_retriever()
 
     return {
         "status": "ok",
@@ -184,9 +208,10 @@ def get_profile():
 
 
 @app.post("/profile")
-def update_profile(profile: dict):
-    """Add or edit the company profile from the app, leaving uploaded docs alone."""
+def update_profile(profile: Optional[dict] = None):
+    """Add, edit, or clear (pass null) the company profile — docs untouched."""
     _session["profile"] = profile or None
+    _save_profile(_session["profile"])
     return {"status": "ok", "profile": _session["profile"]}
 
 

@@ -15,6 +15,8 @@ import {
   readSessionFile,
   fetchProfile,
   saveProfile,
+  loadCachedProfile,
+  cacheProfile,
 } from "./lib/session.js";
 import {
   IconGavel,
@@ -37,9 +39,19 @@ import {
   IconBulb,
   IconSend,
   IconBuilding,
-  IconX,
-  IconAlertTriangle,
 } from "@tabler/icons-react";
+
+// Fields the onboarding wizard collects that the board actually reasons from.
+// Used only to decide which of the three topbar-button states to show.
+const PROFILE_CORE_FIELDS = [
+  "business_name", "city", "industry", "description", "team_size", "revenue", "risk_tolerance",
+];
+function profileCompleteness(p) {
+  if (!p) return "none";
+  const filled = PROFILE_CORE_FIELDS.filter((f) => (p[f] || "").toString().trim()).length;
+  if (filled === 0) return "none";
+  return filled < PROFILE_CORE_FIELDS.length ? "partial" : "complete";
+}
 
 const TABS = [
   { id: "convene", label: UI.tabConvene, Icon: IconPencil },
@@ -72,23 +84,40 @@ export default function App() {
 
   // Company profile the board is briefed with (null until added).
   const [profile, setProfile] = useState(null);
-  const [profileKnown, setProfileKnown] = useState(false); // GET /profile answered
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileKnown, setProfileKnown] = useState(false); // have we settled on a state yet?
 
   useEffect(() => {
+    // Paint instantly from whatever the browser remembers, then confirm with
+    // the server — a free-tier host can lose its in-memory session between
+    // onboarding and the first visit here, so the cache is the source of
+    // truth the user actually experiences.
+    const cached = loadCachedProfile();
+    if (cached) setProfile(cached);
+
     fetchProfile()
-      .then((p) => {
-        setProfile(p);
+      .then(async (server) => {
+        if (server) {
+          setProfile(server);
+          cacheProfile(server);
+        } else if (cached) {
+          // Server forgot but the browser didn't — restore it server-side too,
+          // so live board runs get the company context in this tab as well.
+          try {
+            await saveProfile(cached);
+          } catch {
+            /* still fine — the cached copy already drives the UI */
+          }
+          setProfile(cached);
+        } else {
+          setProfile(null);
+        }
         setProfileKnown(true);
       })
-      .catch(() => {}); // API down — keep the button in its neutral state
+      .catch(() => {
+        // API unreachable — trust the cache if there is one, otherwise stay neutral.
+        if (cached) setProfileKnown(true);
+      });
   }, []);
-
-  const handleProfileSave = async (payload) => {
-    const saved = await saveProfile(payload);
-    setProfile(saved);
-    setProfileKnown(true);
-  };
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -117,19 +146,9 @@ export default function App() {
         setTab={setTab}
         lang={lang}
         setLang={setLang}
-        hasProfile={!!profile}
-        profileKnown={profileKnown}
-        onProfile={() => setProfileOpen(true)}
+        profileState={profileKnown ? profileCompleteness(profile) : "unknown"}
+        onProfile={() => { window.location.href = "/onboarding?edit=1"; }}
       />
-
-      {profileOpen && (
-        <ProfileModal
-          t={t}
-          profile={profile}
-          onSave={handleProfileSave}
-          onClose={() => setProfileOpen(false)}
-        />
-      )}
 
       <main className="panel">
         {tab === "convene" && (
@@ -189,8 +208,15 @@ export default function App() {
 }
 
 // ── Top bar ──────────────────────────────────────────────────────────────────
-function Topbar({ t, tab, setTab, lang, setLang, hasProfile, profileKnown, onProfile }) {
-  const missing = profileKnown && !hasProfile;
+const PROFILE_BTN_LABEL = {
+  none: UI.profileBtnAdd,
+  partial: UI.profileBtnPartial,
+  complete: UI.profileBtnEdit,
+  unknown: UI.profileBtnEdit,
+};
+
+function Topbar({ t, tab, setTab, lang, setLang, profileState, onProfile }) {
+  const incomplete = profileState === "none" || profileState === "partial";
   return (
     <div className="topbar">
       <div className="brand">
@@ -213,13 +239,13 @@ function Topbar({ t, tab, setTab, lang, setLang, hasProfile, profileKnown, onPro
       </div>
       <div className="topbar-side">
         <button
-          className={"profile-btn" + (missing ? " missing" : "")}
+          className={"profile-btn" + (incomplete ? " missing" : "") + (profileState === "partial" ? " partial" : "")}
           onClick={onProfile}
-          title={t(missing ? UI.profileBtnAdd : UI.profileBtnEdit)}
+          title={t(PROFILE_BTN_LABEL[profileState])}
         >
           <IconBuilding size={15} />
-          <span>{t(missing ? UI.profileBtnAdd : UI.profileBtnEdit)}</span>
-          {missing && <span className="profile-dot" />}
+          <span>{t(PROFILE_BTN_LABEL[profileState])}</span>
+          {incomplete && <span className="profile-dot" />}
         </button>
         <button
           className="lang-toggle"
@@ -227,132 +253,6 @@ function Topbar({ t, tab, setTab, lang, setLang, hasProfile, profileKnown, onPro
         >
           {UI.langToggle[lang]}
         </button>
-      </div>
-    </div>
-  );
-}
-
-// ── Company profile add / edit modal ─────────────────────────────────────────
-const TEAM_SIZES = ["1–10 employees", "11–50 employees", "51–200 employees", "200+ employees"];
-
-function ProfileModal({ t, profile, onSave, onClose }) {
-  const [form, setForm] = useState(() => ({
-    business_name: profile?.business_name || "",
-    city: profile?.city || "",
-    industry: profile?.industry || "",
-    description: profile?.description || "",
-    team_size: profile?.team_size || "",
-    revenue: profile?.revenue || "",
-    risk_tolerance: profile?.risk_tolerance || "",
-  }));
-  const [challenges, setChallenges] = useState((profile?.challenges || []).join(", "));
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-
-  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-
-  const submit = async () => {
-    setBusy(true);
-    setError("");
-    try {
-      await onSave({
-        ...(profile || {}),
-        ...form,
-        challenges: challenges.split(/[,،]/).map((s) => s.trim()).filter(Boolean),
-      });
-      onClose();
-    } catch {
-      setError(t(UI.profileError));
-      setBusy(false);
-    }
-  };
-
-  const risks = [
-    ["conservative", UI.riskConservative],
-    ["moderate", UI.riskModerate],
-    ["aggressive", UI.riskAggressive],
-  ];
-
-  return (
-    <div className="pmodal-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="pmodal">
-        <div className="pmodal-head">
-          <div className="pmodal-titles">
-            <h3 className="pmodal-title display">{t(UI.profileTitle)}</h3>
-            <p className="pmodal-lede">{t(UI.profileLede)}</p>
-          </div>
-          <button className="pmodal-close" onClick={onClose} title={t(UI.profileCancel)}>
-            <IconX size={18} />
-          </button>
-        </div>
-
-        {!profile && (
-          <div className="pmodal-warning">
-            <IconAlertTriangle size={17} />
-            <span>{t(UI.profileMissing)}</span>
-          </div>
-        )}
-
-        <div className="pform-grid">
-          <label className="pfield">
-            <span className="pfield-label">{t(UI.profileName)}</span>
-            <input className="pfield-input" value={form.business_name} onChange={set("business_name")} />
-          </label>
-          <label className="pfield">
-            <span className="pfield-label">{t(UI.profileCity)}</span>
-            <input className="pfield-input" value={form.city} onChange={set("city")} />
-          </label>
-          <label className="pfield wide">
-            <span className="pfield-label">{t(UI.profileIndustry)}</span>
-            <input className="pfield-input" value={form.industry} onChange={set("industry")} />
-          </label>
-          <label className="pfield wide">
-            <span className="pfield-label">{t(UI.profileDescription)}</span>
-            <textarea className="pfield-input" rows={2} value={form.description} onChange={set("description")} />
-          </label>
-          <label className="pfield">
-            <span className="pfield-label">{t(UI.profileTeam)}</span>
-            <select className="pfield-input" value={form.team_size} onChange={set("team_size")}>
-              <option value="">{t(UI.profileSelect)}</option>
-              {TEAM_SIZES.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </label>
-          <label className="pfield">
-            <span className="pfield-label">{t(UI.profileRevenue)}</span>
-            <input className="pfield-input" placeholder="300,000 SAR" value={form.revenue} onChange={set("revenue")} />
-          </label>
-          <label className="pfield">
-            <span className="pfield-label">{t(UI.profileRisk)}</span>
-            <select className="pfield-input" value={form.risk_tolerance} onChange={set("risk_tolerance")}>
-              <option value="">{t(UI.profileSelect)}</option>
-              {risks.map(([v, label]) => (
-                <option key={v} value={v}>{t(label)}</option>
-              ))}
-            </select>
-          </label>
-          <label className="pfield wide">
-            <span className="pfield-label">{t(UI.profileChallenges)}</span>
-            <input
-              className="pfield-input"
-              placeholder="Cash flow, Competition, Hiring…"
-              value={challenges}
-              onChange={(e) => setChallenges(e.target.value)}
-            />
-          </label>
-        </div>
-
-        {error && <p className="error-msg">{error}</p>}
-
-        <div className="pmodal-actions">
-          <button className="convene-btn pmodal-save" onClick={submit} disabled={busy}>
-            {busy ? <IconLoader2 size={17} className="spin" /> : <IconDeviceFloppy size={17} />}
-            {t(busy ? UI.profileSaving : UI.profileSave)}
-          </button>
-          <button className="ghost-btn" onClick={onClose}>{t(UI.profileCancel)}</button>
-          <a className="pmodal-fullsetup" href="/onboarding">{t(UI.profileFullSetup)} →</a>
-        </div>
       </div>
     </div>
   );

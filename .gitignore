@@ -51,5 +51,8 @@ Thumbs.db
 # Company documents — real PDFs should not live in git
 documents/*.pdf
 
+# Persisted company profile — runtime state, not source
+documents/profile.json
+
 # FAISS index cache — derived from documents, rebuilt automatically
 .rag_cache/

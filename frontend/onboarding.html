@@ -80,7 +80,7 @@ body{
 .progress-track{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
 .progress-fill{height:100%;background:var(--ink);border-radius:2px;transition:width 0.6s cubic-bezier(0.16,1,0.3,1)}
 .step-dots{display:flex;gap:6px;margin-top:10px}
-.sdot{width:6px;height:6px;border-radius:50%;background:var(--line);transition:all 0.3s}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--line);transition:all 0.3s;cursor:pointer}
 .sdot.done{background:var(--ink)}
 .sdot.active{background:var(--ink);width:18px;border-radius:3px}
 
@@ -478,28 +478,28 @@ body{
       <h2 class="q-title" data-i18n="q2t">Which industry best describes your business?</h2>
       <p class="q-hint" data-i18n="q2h">Your advisors tailor their knowledge to your sector.</p>
       <div class="options" id="q2-opts">
-        <div class="opt" onclick="selectOpt('q2',this,'Retail & E-commerce'); hideOtherIndustry()">
+        <div class="opt" id="ind-opt-1" onclick="selectOpt('q2',this,'Retail & E-commerce'); hideOtherIndustry()">
           <span class="opt-icon">🛒</span><div class="opt-text"><div class="opt-label" data-i18n="o1l">Retail & E-commerce</div><div class="opt-desc" data-i18n="o1d">Physical stores, online shops, product sales</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q2',this,'Logistics & Supply Chain'); hideOtherIndustry()">
+        <div class="opt" id="ind-opt-2" onclick="selectOpt('q2',this,'Logistics & Supply Chain'); hideOtherIndustry()">
           <span class="opt-icon">🚚</span><div class="opt-text"><div class="opt-label" data-i18n="o2l">Logistics & Supply Chain</div><div class="opt-desc" data-i18n="o2d">Transportation, warehousing, delivery</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q2',this,'Technology & SaaS'); hideOtherIndustry()">
+        <div class="opt" id="ind-opt-3" onclick="selectOpt('q2',this,'Technology & SaaS'); hideOtherIndustry()">
           <span class="opt-icon">💻</span><div class="opt-text"><div class="opt-label" data-i18n="o3l">Technology & SaaS</div><div class="opt-desc" data-i18n="o3d">Software, apps, digital products</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q2',this,'Food & Hospitality'); hideOtherIndustry()">
+        <div class="opt" id="ind-opt-4" onclick="selectOpt('q2',this,'Food & Hospitality'); hideOtherIndustry()">
           <span class="opt-icon">🍽️</span><div class="opt-text"><div class="opt-label" data-i18n="o4l">Food & Hospitality</div><div class="opt-desc" data-i18n="o4d">Restaurants, catering, hotels</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q2',this,'Professional Services'); hideOtherIndustry()">
+        <div class="opt" id="ind-opt-5" onclick="selectOpt('q2',this,'Professional Services'); hideOtherIndustry()">
           <span class="opt-icon">📋</span><div class="opt-text"><div class="opt-label" data-i18n="o5l">Professional Services</div><div class="opt-desc" data-i18n="o5d">Consulting, legal, accounting</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q2',this,'Construction & Real Estate'); hideOtherIndustry()">
+        <div class="opt" id="ind-opt-6" onclick="selectOpt('q2',this,'Construction & Real Estate'); hideOtherIndustry()">
           <span class="opt-icon">🏗️</span><div class="opt-text"><div class="opt-label" data-i18n="o6l">Construction & Real Estate</div><div class="opt-desc" data-i18n="o6d">Contracting, property, development</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q2',this,'Healthcare & Clinics'); hideOtherIndustry()">
+        <div class="opt" id="ind-opt-7" onclick="selectOpt('q2',this,'Healthcare & Clinics'); hideOtherIndustry()">
           <span class="opt-icon">🏥</span><div class="opt-text"><div class="opt-label" data-i18n="o7l">Healthcare & Clinics</div><div class="opt-desc" data-i18n="o7d">Medical services, pharmacies, wellness</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q2',this,'Other'); showOtherIndustry()">
+        <div class="opt" id="ind-opt-other" onclick="selectOpt('q2',this,'Other'); showOtherIndustry()">
           <span class="opt-icon">📦</span><div class="opt-text"><div class="opt-label" data-i18n="o8l">Other</div><div class="opt-desc" data-i18n="o8d">Tell us your industry below</div></div><span class="opt-radio"></span>
         </div>
       </div>
@@ -520,16 +520,16 @@ body{
       <h2 class="q-title" data-i18n="q3t">How big is your team?</h2>
       <p class="q-hint" data-i18n="q3h">Team size affects Nitaqat ratios, HR obligations, and how your advisors frame their recommendations.</p>
       <div class="options" id="q3-size">
-        <div class="opt" onclick="selectOpt('q3a',this,'1–10 employees')">
+        <div class="opt" id="team-opt-1" onclick="selectOpt('q3a',this,'1–10 employees')">
           <div class="opt-text"><div class="opt-label" data-i18n="t1l">1–10 employees</div><div class="opt-desc" data-i18n="t1d">Early stage, founder-led</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q3a',this,'11–50 employees')">
+        <div class="opt" id="team-opt-2" onclick="selectOpt('q3a',this,'11–50 employees')">
           <div class="opt-text"><div class="opt-label" data-i18n="t2l">11–50 employees</div><div class="opt-desc" data-i18n="t2d">Growing team</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q3a',this,'51–200 employees')">
+        <div class="opt" id="team-opt-3" onclick="selectOpt('q3a',this,'51–200 employees')">
           <div class="opt-text"><div class="opt-label" data-i18n="t3l">51–200 employees</div><div class="opt-desc" data-i18n="t3d">Established business</div></div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q3a',this,'200+ employees')">
+        <div class="opt" id="team-opt-4" onclick="selectOpt('q3a',this,'200+ employees')">
           <div class="opt-text"><div class="opt-label" data-i18n="t4l">200+ employees</div><div class="opt-desc" data-i18n="t4d">Mid to large company</div></div><span class="opt-radio"></span>
         </div>
       </div>
@@ -569,21 +569,21 @@ body{
       <h2 class="q-title" data-i18n="q5t">How does your company approach risk?</h2>
       <p class="q-hint" data-i18n="q5h">This shapes how your board weighs caution against opportunity in every debate.</p>
       <div class="options" id="q5-opts">
-        <div class="opt" onclick="selectOpt('q5',this,'conservative')">
+        <div class="opt" id="risk-opt-1" onclick="selectOpt('q5',this,'conservative')">
           <span class="opt-icon" style="font-size:22px">🛡️</span>
           <div class="opt-text">
             <div class="opt-label" data-i18n="r1l">Conservative</div>
             <div class="opt-desc" data-i18n="r1d">We prefer stability. We move carefully and protect what we have built.</div>
           </div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q5',this,'moderate')">
+        <div class="opt" id="risk-opt-2" onclick="selectOpt('q5',this,'moderate')">
           <span class="opt-icon" style="font-size:22px">⚖️</span>
           <div class="opt-text">
             <div class="opt-label" data-i18n="r2l">Moderate</div>
             <div class="opt-desc" data-i18n="r2d">We balance growth and caution. We take calculated risks with clear upside.</div>
           </div><span class="opt-radio"></span>
         </div>
-        <div class="opt" onclick="selectOpt('q5',this,'aggressive')">
+        <div class="opt" id="risk-opt-3" onclick="selectOpt('q5',this,'aggressive')">
           <span class="opt-icon" style="font-size:22px">🚀</span>
           <div class="opt-text">
             <div class="opt-label" data-i18n="r3l">Aggressive</div>
@@ -659,7 +659,7 @@ body{
         <button class="btn-back" onclick="goTo(6)"><i class="ti ti-arrow-left"></i> <span data-i18n="back">Back</span></button>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
           <button class="btn-next" id="btn-build" onclick="exportOnboarding()"><i class="ti ti-download"></i> <span data-i18n="build">Build my board</span></button>
-          <span class="skip-link" onclick="goTo(8)" data-i18n="skipDocs">Skip — use answers only</span>
+          <span class="skip-link" onclick="exportOnboarding()" data-i18n="skipDocs">Skip — use answers only</span>
         </div>
       </div>
     </div>
@@ -747,6 +747,8 @@ function buildDots(){
   for(let i=1;i<=TOTAL;i++){
     const d=document.createElement('span');
     d.className='sdot'+(i===currentStep?' active':i<currentStep?' done':'');
+    d.title = lang==='ar' ? ('السؤال '+i) : ('Question '+i);
+    d.onclick = () => goTo(i);
     c.appendChild(d);
   }
 }
@@ -887,6 +889,16 @@ function removeFile(i){
 const API_URL = (typeof window !== 'undefined' && window.__API_BASE__) || '';
 const APP_URL = ((typeof window !== 'undefined' && window.__APP_BASE__) || '') + '/app';
 
+// Editing an existing profile from the app (?edit=1) behaves a bit differently:
+// the "build" button says "Save changes" and returns straight to the board
+// instead of showing the first-time "your board is ready" reveal screen.
+const cameFromApp = new URLSearchParams(location.search).get('edit') === '1';
+
+function cacheProfile(profile){
+  try { localStorage.setItem('boardroom.profile', JSON.stringify(profile)); }
+  catch(e) { /* storage unavailable — server round-trip still works */ }
+}
+
 function buildOnboardingPayload(){
   return {
     session_id: crypto.randomUUID(),
@@ -923,7 +935,13 @@ async function exportOnboarding(){
       throw new Error(err.detail || `Server error ${res.status}`);
     }
 
-    goTo(8);
+    cacheProfile(profile);
+
+    if (cameFromApp) {
+      window.location.href = APP_URL;
+    } else {
+      goTo(8);
+    }
 
   } catch(err){
     console.error('Onboard failed:', err);
@@ -932,6 +950,81 @@ async function exportOnboarding(){
     btn.innerHTML = '<i class="ti ti-download"></i> <span data-i18n="build">' + T('build') + '</span>';
   }
 }
+
+const KNOWN_INDUSTRIES = {
+  'Retail & E-commerce': 'ind-opt-1', 'Logistics & Supply Chain': 'ind-opt-2',
+  'Technology & SaaS': 'ind-opt-3', 'Food & Hospitality': 'ind-opt-4',
+  'Professional Services': 'ind-opt-5', 'Construction & Real Estate': 'ind-opt-6',
+  'Healthcare & Clinics': 'ind-opt-7',
+};
+const TEAM_SIZE_IDS = {
+  '1–10 employees': 'team-opt-1', '11–50 employees': 'team-opt-2',
+  '51–200 employees': 'team-opt-3', '200+ employees': 'team-opt-4',
+};
+const RISK_IDS = { conservative: 'risk-opt-1', moderate: 'risk-opt-2', aggressive: 'risk-opt-3' };
+
+function prefillFromProfile(p){
+  if(!p) return;
+
+  document.getElementById('q1-name').value = p.business_name || '';
+  document.getElementById('q1-city').value = p.city || '';
+  document.getElementById('q1-what').value = p.description || '';
+  checkQ1();
+
+  if(p.industry){
+    const optId = KNOWN_INDUSTRIES[p.industry];
+    if(optId){
+      selectOpt('q2', document.getElementById(optId), p.industry);
+      hideOtherIndustry();
+    } else {
+      selectOpt('q2', document.getElementById('ind-opt-other'), 'Other');
+      showOtherIndustry();
+      document.getElementById('other-industry-input').value = p.industry;
+      setOtherIndustry(p.industry);
+    }
+  }
+
+  if(p.team_size && TEAM_SIZE_IDS[p.team_size]){
+    selectOpt('q3a', document.getElementById(TEAM_SIZE_IDS[p.team_size]), p.team_size);
+  }
+
+  if(p.revenue){
+    const idx = revLabels.indexOf(p.revenue);
+    if(idx >= 0){
+      document.getElementById('rev-slider').value = idx;
+      updateRevenue(idx);
+    }
+  }
+
+  if(p.risk_tolerance && RISK_IDS[p.risk_tolerance]){
+    selectOpt('q5', document.getElementById(RISK_IDS[p.risk_tolerance]), p.risk_tolerance);
+  }
+
+  if(Array.isArray(p.challenges)){
+    document.querySelectorAll('#q6-chips .chip').forEach(chip => {
+      const label = chip.textContent.trim();
+      if(p.challenges.includes(label) && !chip.classList.contains('selected')){
+        toggleChip(chip, label);
+      }
+    });
+  }
+}
+
+// Load the profile the board already has (server first, browser cache as a
+// fallback) so editing shows real values instead of an empty wizard.
+async function loadExistingProfile(){
+  let profile = null;
+  try {
+    const res = await fetch(`${API_URL}/profile`);
+    if(res.ok) profile = (await res.json()).profile || null;
+  } catch(e) { /* API unreachable — fall back to the cached copy below */ }
+  if(!profile){
+    try { profile = JSON.parse(localStorage.getItem('boardroom.profile') || 'null'); }
+    catch(e) { profile = null; }
+  }
+  if(profile) prefillFromProfile(profile);
+}
+loadExistingProfile();
 
 function buildProfile(){
   const name=answers.q1_name||'Your Company';
@@ -1000,6 +1093,10 @@ const AR = {
   mNote:'يمكنك دائماً إضافة معلومات شركتك أو تعديلها لاحقاً من داخل المجلس.',
   mStay:'أكمل الإعداد (موصى به)',
   mSkip:'تخطَّ على أي حال — خذني إلى المجلس',
+  topRightEdit:'تعديل معلومات شركتك', save:'احفظ التغييرات',
+  mTitleEdit:'تخرج بدون حفظ؟',
+  mBodyEdit:'أنت تعدّل معلومات شركتك الآن. أي تغييرات في هذه الشاشة لن تُحفظ إذا خرجت الآن.',
+  mStayEdit:'أكمل التعديل', mSkipEdit:'تجاهل وارجع',
 };
 const AR_PH = {
   phName:'اسم الشركة',
@@ -1009,7 +1106,11 @@ const AR_PH = {
 };
 const EN = { uploaded:'uploaded', none:'None',
   fileLabel:'Label this document (e.g. Financial report Q1 2026, Vendor contract, HR policy)',
-  building:'Building your board...' };
+  building:'Building your board...',
+  topRightEdit:'Editing your company info', save:'Save changes',
+  mTitleEdit:'Leave without saving?',
+  mBodyEdit:"You're editing your company info. Anything you've changed on this screen won't be saved if you leave now.",
+  mStayEdit:'Keep editing', mSkipEdit:'Discard and go back' };
 const EN_PH = {};
 document.querySelectorAll('[data-i18n]').forEach(el => { EN[el.getAttribute('data-i18n')] = el.innerHTML; });
 document.querySelectorAll('[data-i18n-ph]').forEach(el => { EN_PH[el.getAttribute('data-i18n-ph')] = el.placeholder; });
@@ -1034,6 +1135,15 @@ function applyLang(){
     if (ph[k] != null) el.placeholder = ph[k];
   });
   document.getElementById('lang-toggle').textContent = lang==='ar' ? 'English' : 'العربية';
+  if(cameFromApp){
+    document.querySelector('[data-i18n="topRight"]').textContent = T('topRightEdit');
+    document.querySelector('#btn-build span[data-i18n="build"]').textContent = T('save');
+    document.querySelector('[data-i18n="mTitle"]').textContent = T('mTitleEdit');
+    document.querySelector('[data-i18n="mBody"]').innerHTML = T('mBodyEdit');
+    document.querySelector('[data-i18n="mStay"]').textContent = T('mStayEdit');
+    document.querySelector('[data-i18n="mSkip"]').textContent = T('mSkipEdit');
+    document.querySelector('.modal-note').style.display = 'none';
+  }
   updateStepLabel();
   updateRevenue(document.getElementById('rev-slider').value);
   buildFileList();
