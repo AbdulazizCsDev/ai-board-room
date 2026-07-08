@@ -6,7 +6,7 @@
 <title>AI Board Room — Onboarding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
 <style>
 :root{
@@ -23,12 +23,23 @@
   --market:#6f4bce;    --market-bg:#eee9fa;
   --customer:#c5512a;  --customer-bg:#faeae1;
   --r:16px; --r-sm:11px;
+  --serif:'Fraunces','Amiri',Georgia,serif;
+  --sans:'Inter','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Sans Arabic',monospace;
 }
+/* Arabic swaps the serif display to Amiri and body to Plex Arabic */
+html[dir="rtl"]{
+  --serif:'Amiri','Fraunces',Georgia,serif;
+  --sans:'IBM Plex Sans Arabic','Inter',system-ui,sans-serif;
+  --mono:'IBM Plex Sans Arabic','JetBrains Mono',monospace;
+}
+html[dir="rtl"] .btn-next i,html[dir="rtl"] .btn-back i,
+html[dir="rtl"] .topbar-skip i,html[dir="rtl"] .btn-full i{transform:scaleX(-1)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   background:var(--bg);
   color:var(--ink);
-  font-family:'Inter',sans-serif;
+  font-family:var(--sans);
   font-size:15px;
   line-height:1.65;
   -webkit-font-smoothing:antialiased;
@@ -50,7 +61,7 @@ body{
   background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--bg)
 }
 .brand-mark i{font-size:20px}
-.brand-name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-0.01em}
+.brand-name{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:-0.01em}
 .brand-name span{font-style:italic;font-weight:400;color:var(--ink-soft)}
 .topbar-right{font-size:13px;color:var(--ink-faint)}
 
@@ -64,8 +75,8 @@ body{
 /* ── Progress bar ── */
 .progress-wrap{margin-bottom:36px}
 .progress-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.progress-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint)}
-.progress-step{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-faint)}
+.progress-label{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint)}
+.progress-step{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
 .progress-track{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
 .progress-fill{height:100%;background:var(--ink);border-radius:2px;transition:width 0.6s cubic-bezier(0.16,1,0.3,1)}
 .step-dots{display:flex;gap:6px;margin-top:10px}
@@ -88,7 +99,7 @@ body{
 @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
 .q-eyebrow{
-  font-family:'JetBrains Mono',monospace;
+  font-family:var(--mono);
   font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
   color:var(--customer);margin-bottom:14px;
   display:flex;align-items:center;gap:8px;
@@ -98,7 +109,7 @@ body{
   background:var(--customer);border-radius:1px;display:inline-block;
 }
 .q-title{
-  font-family:'Fraunces',serif;
+  font-family:var(--serif);
   font-size:clamp(22px,4vw,30px);
   font-weight:500;line-height:1.2;
   letter-spacing:-0.01em;
@@ -113,7 +124,7 @@ body{
   border:1px solid var(--line);
   border-radius:var(--r-sm);
   padding:13px 16px;
-  font-family:'Inter',sans-serif;
+  font-family:var(--sans);
   font-size:15px;color:var(--ink);
   outline:none;
   transition:border-color 0.2s,box-shadow 0.2s;
@@ -163,7 +174,7 @@ body{
 /* Revenue slider */
 .slider-wrap{padding:8px 0}
 .slider-val{
-  font-family:'Fraunces',serif;font-size:32px;font-weight:500;
+  font-family:var(--serif);font-size:32px;font-weight:500;
   letter-spacing:-0.02em;margin-bottom:16px;color:var(--ink);
 }
 .q-slider{
@@ -184,7 +195,7 @@ body{
   display:inline-flex;align-items:center;gap:8px;
   background:var(--ink);color:var(--bg);
   border:none;padding:13px 26px;border-radius:30px;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;
+  font-family:var(--sans);font-size:14px;font-weight:500;
   cursor:pointer;transition:transform 0.15s,opacity 0.15s;
 }
 .btn-next:hover{transform:translateY(-1px)}
@@ -194,7 +205,7 @@ body{
   display:inline-flex;align-items:center;gap:6px;
   background:none;border:1px solid var(--line);color:var(--ink-soft);
   padding:11px 18px;border-radius:30px;
-  font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;
+  font-family:var(--sans);font-size:13px;cursor:pointer;
   transition:all 0.15s;
 }
 .btn-back:hover{border-color:var(--ink-faint);color:var(--ink)}
@@ -205,9 +216,15 @@ body{
   display:inline-flex;align-items:center;gap:6px;
   background:none;border:1px solid var(--line);color:var(--ink-soft);
   padding:8px 16px;border-radius:30px;cursor:pointer;
-  font-family:'Inter',sans-serif;font-size:13px;transition:all 0.15s;
+  font-family:var(--sans);font-size:13px;transition:all 0.15s;
 }
 .topbar-skip:hover{border-color:var(--ink-faint);color:var(--ink)}
+.lang-toggle{
+  background:var(--card);border:1px solid var(--line);border-radius:30px;
+  padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);
+  font-family:var(--sans);
+}
+.lang-toggle:hover{border-color:var(--ink-faint)}
 .topbar-skip i{font-size:15px}
 
 /* ── Skip warning modal ── */
@@ -234,7 +251,7 @@ body{
   margin:0 auto 16px;
 }
 .modal-icon i{font-size:26px}
-.modal h3{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:10px}
+.modal h3{font-family:var(--serif);font-size:21px;font-weight:600;margin-bottom:10px}
 .modal p{font-size:14px;color:var(--ink-soft);line-height:1.65;margin-bottom:8px}
 .modal .modal-note{font-size:12.5px;color:var(--ink-faint);margin-bottom:22px}
 .modal-actions{display:flex;flex-direction:column;gap:10px}
@@ -242,14 +259,14 @@ body{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:var(--ink);color:var(--bg);
   border:none;padding:14px 26px;border-radius:30px;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;
+  font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
   transition:transform 0.15s;
 }
 .btn-modal-stay:hover{transform:translateY(-1px)}
 .btn-skip-anyway{
   background:none;border:1px solid var(--line);color:var(--ink-soft);
   padding:12px 26px;border-radius:30px;cursor:pointer;
-  font-family:'Inter',sans-serif;font-size:13.5px;transition:all 0.15s;
+  font-family:var(--sans);font-size:13.5px;transition:all 0.15s;
 }
 .btn-skip-anyway:hover{border-color:var(--ink-faint);color:var(--ink)}
 
@@ -273,7 +290,7 @@ body{
   margin:0 auto 16px;
 }
 .upload-icon i{font-size:26px;color:var(--ink-soft)}
-.upload-title{font-family:'Fraunces',serif;font-size:19px;font-weight:500;margin-bottom:6px}
+.upload-title{font-family:var(--serif);font-size:19px;font-weight:500;margin-bottom:6px}
 .upload-sub{font-size:14px;color:var(--ink-faint)}
 .upload-types{display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap}
 .utype{font-size:11px;font-weight:500;padding:4px 10px;border-radius:6px;background:var(--bg-warm);border:1px solid var(--line);color:var(--ink-faint)}
@@ -294,12 +311,12 @@ body{
 /* ── Profile card (final screen) ── */
 .profile-reveal{text-align:center;padding:8px 0}
 .profile-reveal .eyebrow{
-  font-family:'JetBrains Mono',monospace;font-size:11px;
+  font-family:var(--mono);font-size:11px;
   letter-spacing:0.14em;text-transform:uppercase;color:var(--legal);
   margin-bottom:16px;
 }
 .profile-reveal h2{
-  font-family:'Fraunces',serif;font-size:clamp(26px,5vw,38px);
+  font-family:var(--serif);font-size:clamp(26px,5vw,38px);
   font-weight:500;line-height:1.1;letter-spacing:-0.02em;margin-bottom:6px;
 }
 .profile-reveal h2 em{font-style:italic;color:var(--ink-soft)}
@@ -316,14 +333,14 @@ body{
   width:48px;height:48px;border-radius:13px;
   background:var(--ink);color:var(--bg);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Fraunces',serif;font-size:20px;font-weight:600;
+  font-family:var(--serif);font-size:20px;font-weight:600;
   flex-shrink:0;
 }
-.pcard-name{font-family:'Fraunces',serif;font-size:20px;font-weight:600}
+.pcard-name{font-family:var(--serif);font-size:20px;font-weight:600}
 .pcard-industry{font-size:13px;color:var(--ink-faint);margin-top:2px}
 .pcard-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .pcard-field{}
-.pfield-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+.pfield-label{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
 .pfield-val{font-size:14px;font-weight:500;color:var(--ink)}
 
 .board-ready{
@@ -343,7 +360,7 @@ body{
   display:flex;align-items:center;justify-content:center;gap:9px;
   width:100%;background:var(--ink);color:var(--bg);
   border:none;padding:15px;border-radius:30px;
-  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;
+  font-family:var(--sans);font-size:15px;font-weight:500;
   cursor:pointer;transition:transform 0.15s;
 }
 .btn-full:hover{transform:translateY(-1px)}
@@ -417,9 +434,10 @@ body{
     <div class="brand-mark"><i class="ti ti-gavel"></i></div>
     <div class="brand-name">Board<span>room</span></div>
   </div>
-  <div style="display:flex;align-items:center;gap:16px">
-    <span class="topbar-right">Setting up your board</span>
-    <button class="topbar-skip" onclick="openSkipModal()">Skip for now <i class="ti ti-player-skip-forward"></i></button>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="topbar-right" data-i18n="topRight">Setting up your board</span>
+    <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">العربية</button>
+    <button class="topbar-skip" onclick="openSkipModal()"><span data-i18n="topSkip">Skip for now</span> <i class="ti ti-player-skip-forward"></i></button>
   </div>
 </div>
 
@@ -428,7 +446,7 @@ body{
   <!-- Progress bar (shared across all Q screens) -->
   <div class="progress-wrap" id="progress-wrap">
     <div class="progress-top">
-      <span class="progress-label">Onboarding</span>
+      <span class="progress-label" data-i18n="progress">Onboarding</span>
       <span class="progress-step" id="step-label">1 of 8</span>
     </div>
     <div class="progress-track">
@@ -440,15 +458,15 @@ body{
   <!-- ════ SCREEN 1 — Company name + city + what you do ════ -->
   <div class="screen active" id="s1">
     <div class="q-card">
-      <div class="q-eyebrow">Question 1</div>
-      <h2 class="q-title">Tell us about your company</h2>
-      <p class="q-hint">Your board needs to know the business and where it operates before they can advise it.</p>
-      <input class="q-input" id="q1-name" type="text" placeholder="Company name" style="margin-bottom:10px" oninput="checkQ1()">
-      <input class="q-input" id="q1-city" type="text" placeholder="City (e.g. Riyadh, Jeddah, Dammam)" style="margin-bottom:10px" oninput="checkQ1()">
-      <textarea class="q-input" id="q1-what" rows="3" placeholder="What does your business do? (e.g. We run a logistics company serving corporate clients in Riyadh)" oninput="checkQ1()"></textarea>
+      <div class="q-eyebrow" data-i18n="q1e">Question 1</div>
+      <h2 class="q-title" data-i18n="q1t">Tell us about your company</h2>
+      <p class="q-hint" data-i18n="q1h">Your board needs to know the business and where it operates before they can advise it.</p>
+      <input class="q-input" id="q1-name" type="text" data-i18n-ph="phName" placeholder="Company name" style="margin-bottom:10px" oninput="checkQ1()">
+      <input class="q-input" id="q1-city" type="text" data-i18n-ph="phCity" placeholder="City (e.g. Riyadh, Jeddah, Dammam)" style="margin-bottom:10px" oninput="checkQ1()">
+      <textarea class="q-input" id="q1-what" rows="3" data-i18n-ph="phWhat" placeholder="What does your business do? (e.g. We run a logistics company serving corporate clients in Riyadh)" oninput="checkQ1()"></textarea>
       <div class="q-actions">
         <span></span>
-        <button class="btn-next" id="next1" onclick="goTo(2)" disabled><i class="ti ti-arrow-right"></i> Continue</button>
+        <button class="btn-next" id="next1" onclick="goTo(2)" disabled><i class="ti ti-arrow-right"></i> <span data-i18n="next">Continue</span></button>
       </div>
     </div>
   </div>
@@ -456,41 +474,41 @@ body{
   <!-- ════ SCREEN 2 — Industry ════ -->
   <div class="screen" id="s2">
     <div class="q-card">
-      <div class="q-eyebrow">Question 2</div>
-      <h2 class="q-title">Which industry best describes your business?</h2>
-      <p class="q-hint">Your advisors tailor their knowledge to your sector.</p>
+      <div class="q-eyebrow" data-i18n="q2e">Question 2</div>
+      <h2 class="q-title" data-i18n="q2t">Which industry best describes your business?</h2>
+      <p class="q-hint" data-i18n="q2h">Your advisors tailor their knowledge to your sector.</p>
       <div class="options" id="q2-opts">
         <div class="opt" onclick="selectOpt('q2',this,'Retail & E-commerce'); hideOtherIndustry()">
-          <span class="opt-icon">🛒</span><div class="opt-text"><div class="opt-label">Retail & E-commerce</div><div class="opt-desc">Physical stores, online shops, product sales</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">🛒</span><div class="opt-text"><div class="opt-label" data-i18n="o1l">Retail & E-commerce</div><div class="opt-desc" data-i18n="o1d">Physical stores, online shops, product sales</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q2',this,'Logistics & Supply Chain'); hideOtherIndustry()">
-          <span class="opt-icon">🚚</span><div class="opt-text"><div class="opt-label">Logistics & Supply Chain</div><div class="opt-desc">Transportation, warehousing, delivery</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">🚚</span><div class="opt-text"><div class="opt-label" data-i18n="o2l">Logistics & Supply Chain</div><div class="opt-desc" data-i18n="o2d">Transportation, warehousing, delivery</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q2',this,'Technology & SaaS'); hideOtherIndustry()">
-          <span class="opt-icon">💻</span><div class="opt-text"><div class="opt-label">Technology & SaaS</div><div class="opt-desc">Software, apps, digital products</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">💻</span><div class="opt-text"><div class="opt-label" data-i18n="o3l">Technology & SaaS</div><div class="opt-desc" data-i18n="o3d">Software, apps, digital products</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q2',this,'Food & Hospitality'); hideOtherIndustry()">
-          <span class="opt-icon">🍽️</span><div class="opt-text"><div class="opt-label">Food & Hospitality</div><div class="opt-desc">Restaurants, catering, hotels</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">🍽️</span><div class="opt-text"><div class="opt-label" data-i18n="o4l">Food & Hospitality</div><div class="opt-desc" data-i18n="o4d">Restaurants, catering, hotels</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q2',this,'Professional Services'); hideOtherIndustry()">
-          <span class="opt-icon">📋</span><div class="opt-text"><div class="opt-label">Professional Services</div><div class="opt-desc">Consulting, legal, accounting</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">📋</span><div class="opt-text"><div class="opt-label" data-i18n="o5l">Professional Services</div><div class="opt-desc" data-i18n="o5d">Consulting, legal, accounting</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q2',this,'Construction & Real Estate'); hideOtherIndustry()">
-          <span class="opt-icon">🏗️</span><div class="opt-text"><div class="opt-label">Construction & Real Estate</div><div class="opt-desc">Contracting, property, development</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">🏗️</span><div class="opt-text"><div class="opt-label" data-i18n="o6l">Construction & Real Estate</div><div class="opt-desc" data-i18n="o6d">Contracting, property, development</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q2',this,'Healthcare & Clinics'); hideOtherIndustry()">
-          <span class="opt-icon">🏥</span><div class="opt-text"><div class="opt-label">Healthcare & Clinics</div><div class="opt-desc">Medical services, pharmacies, wellness</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">🏥</span><div class="opt-text"><div class="opt-label" data-i18n="o7l">Healthcare & Clinics</div><div class="opt-desc" data-i18n="o7d">Medical services, pharmacies, wellness</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q2',this,'Other'); showOtherIndustry()">
-          <span class="opt-icon">📦</span><div class="opt-text"><div class="opt-label">Other</div><div class="opt-desc">Tell us your industry below</div></div><span class="opt-radio"></span>
+          <span class="opt-icon">📦</span><div class="opt-text"><div class="opt-label" data-i18n="o8l">Other</div><div class="opt-desc" data-i18n="o8d">Tell us your industry below</div></div><span class="opt-radio"></span>
         </div>
       </div>
       <div id="other-industry-wrap" style="display:none;margin-top:12px">
-        <input class="q-input" id="other-industry-input" type="text" placeholder="Type your industry (e.g. Automotive, Education, Agriculture...)" oninput="setOtherIndustry(this.value)">
+        <input class="q-input" id="other-industry-input" type="text" data-i18n-ph="phOther" placeholder="Type your industry (e.g. Automotive, Education, Agriculture...)" oninput="setOtherIndustry(this.value)">
       </div>
       <div class="q-actions">
-        <button class="btn-back" onclick="goTo(1)"><i class="ti ti-arrow-left"></i> Back</button>
-        <button class="btn-next" id="next2" onclick="goTo(3)" disabled><i class="ti ti-arrow-right"></i> Continue</button>
+        <button class="btn-back" onclick="goTo(1)"><i class="ti ti-arrow-left"></i> <span data-i18n="back">Back</span></button>
+        <button class="btn-next" id="next2" onclick="goTo(3)" disabled><i class="ti ti-arrow-right"></i> <span data-i18n="next">Continue</span></button>
       </div>
     </div>
   </div>
@@ -498,26 +516,26 @@ body{
   <!-- ════ SCREEN 3 — Team size ════ -->
   <div class="screen" id="s3">
     <div class="q-card">
-      <div class="q-eyebrow">Question 3</div>
-      <h2 class="q-title">How big is your team?</h2>
-      <p class="q-hint">Team size affects Nitaqat ratios, HR obligations, and how your advisors frame their recommendations.</p>
+      <div class="q-eyebrow" data-i18n="q3e">Question 3</div>
+      <h2 class="q-title" data-i18n="q3t">How big is your team?</h2>
+      <p class="q-hint" data-i18n="q3h">Team size affects Nitaqat ratios, HR obligations, and how your advisors frame their recommendations.</p>
       <div class="options" id="q3-size">
         <div class="opt" onclick="selectOpt('q3a',this,'1–10 employees')">
-          <div class="opt-text"><div class="opt-label">1–10 employees</div><div class="opt-desc">Early stage, founder-led</div></div><span class="opt-radio"></span>
+          <div class="opt-text"><div class="opt-label" data-i18n="t1l">1–10 employees</div><div class="opt-desc" data-i18n="t1d">Early stage, founder-led</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q3a',this,'11–50 employees')">
-          <div class="opt-text"><div class="opt-label">11–50 employees</div><div class="opt-desc">Growing team</div></div><span class="opt-radio"></span>
+          <div class="opt-text"><div class="opt-label" data-i18n="t2l">11–50 employees</div><div class="opt-desc" data-i18n="t2d">Growing team</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q3a',this,'51–200 employees')">
-          <div class="opt-text"><div class="opt-label">51–200 employees</div><div class="opt-desc">Established business</div></div><span class="opt-radio"></span>
+          <div class="opt-text"><div class="opt-label" data-i18n="t3l">51–200 employees</div><div class="opt-desc" data-i18n="t3d">Established business</div></div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q3a',this,'200+ employees')">
-          <div class="opt-text"><div class="opt-label">200+ employees</div><div class="opt-desc">Mid to large company</div></div><span class="opt-radio"></span>
+          <div class="opt-text"><div class="opt-label" data-i18n="t4l">200+ employees</div><div class="opt-desc" data-i18n="t4d">Mid to large company</div></div><span class="opt-radio"></span>
         </div>
       </div>
       <div class="q-actions">
-        <button class="btn-back" onclick="goTo(2)"><i class="ti ti-arrow-left"></i> Back</button>
-        <button class="btn-next" id="next3" onclick="goTo(4)" disabled><i class="ti ti-arrow-right"></i> Continue</button>
+        <button class="btn-back" onclick="goTo(2)"><i class="ti ti-arrow-left"></i> <span data-i18n="back">Back</span></button>
+        <button class="btn-next" id="next3" onclick="goTo(4)" disabled><i class="ti ti-arrow-right"></i> <span data-i18n="next">Continue</span></button>
       </div>
     </div>
   </div>
@@ -525,21 +543,21 @@ body{
   <!-- ════ SCREEN 4 — Revenue ════ -->
   <div class="screen" id="s4">
     <div class="q-card">
-      <div class="q-eyebrow">Question 4</div>
-      <h2 class="q-title">What is your approximate monthly revenue?</h2>
-      <p class="q-hint">The Finance advisor uses this to calculate margins, runway, and financial viability.</p>
+      <div class="q-eyebrow" data-i18n="q4e">Question 4</div>
+      <h2 class="q-title" data-i18n="q4t">What is your approximate monthly revenue?</h2>
+      <p class="q-hint" data-i18n="q4h">The Finance advisor uses this to calculate margins, runway, and financial viability.</p>
       <div class="slider-wrap">
         <div class="slider-val" id="rev-val">300,000 SAR / month</div>
         <input class="q-slider" type="range" min="0" max="10" value="3" id="rev-slider" oninput="updateRevenue(this.value)">
         <div class="slider-labels">
-          <span>Under 50K</span>
-          <span>500K+</span>
-          <span>1M+</span>
+          <span data-i18n="slid0">Under 50K</span>
+          <span data-i18n="slid1">500K+</span>
+          <span data-i18n="slid2">1M+</span>
         </div>
       </div>
       <div class="q-actions">
-        <button class="btn-back" onclick="goTo(3)"><i class="ti ti-arrow-left"></i> Back</button>
-        <button class="btn-next" onclick="goTo(5)"><i class="ti ti-arrow-right"></i> Continue</button>
+        <button class="btn-back" onclick="goTo(3)"><i class="ti ti-arrow-left"></i> <span data-i18n="back">Back</span></button>
+        <button class="btn-next" onclick="goTo(5)"><i class="ti ti-arrow-right"></i> <span data-i18n="next">Continue</span></button>
       </div>
     </div>
   </div>
@@ -547,35 +565,35 @@ body{
   <!-- ════ SCREEN 5 — Risk tolerance ════ -->
   <div class="screen" id="s5">
     <div class="q-card">
-      <div class="q-eyebrow">Question 5</div>
-      <h2 class="q-title">How does your company approach risk?</h2>
-      <p class="q-hint">This shapes how your board weighs caution against opportunity in every debate.</p>
+      <div class="q-eyebrow" data-i18n="q5e">Question 5</div>
+      <h2 class="q-title" data-i18n="q5t">How does your company approach risk?</h2>
+      <p class="q-hint" data-i18n="q5h">This shapes how your board weighs caution against opportunity in every debate.</p>
       <div class="options" id="q5-opts">
         <div class="opt" onclick="selectOpt('q5',this,'conservative')">
           <span class="opt-icon" style="font-size:22px">🛡️</span>
           <div class="opt-text">
-            <div class="opt-label">Conservative</div>
-            <div class="opt-desc">We prefer stability. We move carefully and protect what we have built.</div>
+            <div class="opt-label" data-i18n="r1l">Conservative</div>
+            <div class="opt-desc" data-i18n="r1d">We prefer stability. We move carefully and protect what we have built.</div>
           </div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q5',this,'moderate')">
           <span class="opt-icon" style="font-size:22px">⚖️</span>
           <div class="opt-text">
-            <div class="opt-label">Moderate</div>
-            <div class="opt-desc">We balance growth and caution. We take calculated risks with clear upside.</div>
+            <div class="opt-label" data-i18n="r2l">Moderate</div>
+            <div class="opt-desc" data-i18n="r2d">We balance growth and caution. We take calculated risks with clear upside.</div>
           </div><span class="opt-radio"></span>
         </div>
         <div class="opt" onclick="selectOpt('q5',this,'aggressive')">
           <span class="opt-icon" style="font-size:22px">🚀</span>
           <div class="opt-text">
-            <div class="opt-label">Aggressive</div>
-            <div class="opt-desc">We move fast and take bold bets. Speed and growth matter most.</div>
+            <div class="opt-label" data-i18n="r3l">Aggressive</div>
+            <div class="opt-desc" data-i18n="r3d">We move fast and take bold bets. Speed and growth matter most.</div>
           </div><span class="opt-radio"></span>
         </div>
       </div>
       <div class="q-actions">
-        <button class="btn-back" onclick="goTo(4)"><i class="ti ti-arrow-left"></i> Back</button>
-        <button class="btn-next" id="next5" onclick="goTo(6)" disabled><i class="ti ti-arrow-right"></i> Continue</button>
+        <button class="btn-back" onclick="goTo(4)"><i class="ti ti-arrow-left"></i> <span data-i18n="back">Back</span></button>
+        <button class="btn-next" id="next5" onclick="goTo(6)" disabled><i class="ti ti-arrow-right"></i> <span data-i18n="next">Continue</span></button>
       </div>
     </div>
   </div>
@@ -583,26 +601,26 @@ body{
   <!-- ════ SCREEN 6 — Biggest challenges ════ -->
   <div class="screen" id="s6">
     <div class="q-card">
-      <div class="q-eyebrow">Question 6</div>
-      <h2 class="q-title">What are your biggest challenges right now?</h2>
-      <p class="q-hint">Pick all that apply. Your board will pay extra attention to these areas.</p>
+      <div class="q-eyebrow" data-i18n="q6e">Question 6</div>
+      <h2 class="q-title" data-i18n="q6t">What are your biggest challenges right now?</h2>
+      <p class="q-hint" data-i18n="q6h">Pick all that apply. Your board will pay extra attention to these areas.</p>
       <div class="chip-grid" id="q6-chips">
-        <span class="chip" onclick="toggleChip(this,'Cash flow')">Cash flow</span>
-        <span class="chip" onclick="toggleChip(this,'Hiring & HR')">Hiring & HR</span>
-        <span class="chip" onclick="toggleChip(this,'Expanding to new cities')">Expanding to new cities</span>
-        <span class="chip" onclick="toggleChip(this,'Client retention')">Client retention</span>
-        <span class="chip" onclick="toggleChip(this,'Regulatory compliance')">Regulatory compliance</span>
-        <span class="chip" onclick="toggleChip(this,'Pricing strategy')">Pricing strategy</span>
-        <span class="chip" onclick="toggleChip(this,'Competition')">Competition</span>
-        <span class="chip" onclick="toggleChip(this,'Supplier issues')">Supplier issues</span>
-        <span class="chip" onclick="toggleChip(this,'Digital transformation')">Digital transformation</span>
-        <span class="chip" onclick="toggleChip(this,'Profit margins')">Profit margins</span>
-        <span class="chip" onclick="toggleChip(this,'Finding new clients')">Finding new clients</span>
-        <span class="chip" onclick="toggleChip(this,'Operations & processes')">Operations & processes</span>
+        <span class="chip" onclick="toggleChip(this,'Cash flow')" data-i18n="c1">Cash flow</span>
+        <span class="chip" onclick="toggleChip(this,'Hiring & HR')" data-i18n="c2">Hiring & HR</span>
+        <span class="chip" onclick="toggleChip(this,'Expanding to new cities')" data-i18n="c3">Expanding to new cities</span>
+        <span class="chip" onclick="toggleChip(this,'Client retention')" data-i18n="c4">Client retention</span>
+        <span class="chip" onclick="toggleChip(this,'Regulatory compliance')" data-i18n="c5">Regulatory compliance</span>
+        <span class="chip" onclick="toggleChip(this,'Pricing strategy')" data-i18n="c6">Pricing strategy</span>
+        <span class="chip" onclick="toggleChip(this,'Competition')" data-i18n="c7">Competition</span>
+        <span class="chip" onclick="toggleChip(this,'Supplier issues')" data-i18n="c8">Supplier issues</span>
+        <span class="chip" onclick="toggleChip(this,'Digital transformation')" data-i18n="c9">Digital transformation</span>
+        <span class="chip" onclick="toggleChip(this,'Profit margins')" data-i18n="c10">Profit margins</span>
+        <span class="chip" onclick="toggleChip(this,'Finding new clients')" data-i18n="c11">Finding new clients</span>
+        <span class="chip" onclick="toggleChip(this,'Operations & processes')" data-i18n="c12">Operations & processes</span>
       </div>
       <div class="q-actions">
-        <button class="btn-back" onclick="goTo(5)"><i class="ti ti-arrow-left"></i> Back</button>
-        <button class="btn-next" id="next6" onclick="goTo(7)" disabled><i class="ti ti-arrow-right"></i> Continue</button>
+        <button class="btn-back" onclick="goTo(5)"><i class="ti ti-arrow-left"></i> <span data-i18n="back">Back</span></button>
+        <button class="btn-next" id="next6" onclick="goTo(7)" disabled><i class="ti ti-arrow-right"></i> <span data-i18n="next">Continue</span></button>
       </div>
     </div>
   </div>
@@ -610,9 +628,9 @@ body{
   <!-- ════ SCREEN 7 — Document upload ════ -->
   <div class="screen" id="s7">
     <div class="q-card">
-      <div class="q-eyebrow">Final step</div>
-      <h2 class="q-title">Give your board the full picture</h2>
-      <p class="q-hint" style="margin-bottom:20px">Upload company documents so your advisors speak in your actual numbers, not estimates. This step is optional but makes advice dramatically more specific.</p>
+      <div class="q-eyebrow" data-i18n="q7e">Final step</div>
+      <h2 class="q-title" data-i18n="q7t">Give your board the full picture</h2>
+      <p class="q-hint" style="margin-bottom:20px" data-i18n="q7h">Upload company documents so your advisors speak in your actual numbers, not estimates. This step is optional but makes advice dramatically more specific.</p>
 
       <div class="upload-zone" id="drop-zone"
         ondragover="event.preventDefault();this.classList.add('drag')"
@@ -620,8 +638,8 @@ body{
         ondrop="handleDrop(event)">
         <input type="file" multiple accept=".pdf,.docx,.xlsx,.txt" onchange="handleFiles(this.files)">
         <div class="upload-icon"><i class="ti ti-cloud-upload"></i></div>
-        <div class="upload-title">Drop your files here</div>
-        <div class="upload-sub">or click to browse your device</div>
+        <div class="upload-title" data-i18n="upT">Drop your files here</div>
+        <div class="upload-sub" data-i18n="upS">or click to browse your device</div>
         <div class="upload-types">
           <span class="utype">PDF</span>
           <span class="utype">DOCX</span>
@@ -634,14 +652,14 @@ body{
 
       <div style="margin-top:14px;padding:11px 14px;background:var(--bg-warm);border-radius:var(--r-sm);font-size:13px;color:var(--ink-faint);display:flex;gap:9px;align-items:flex-start">
         <i class="ti ti-lock" style="font-size:16px;margin-top:1px;flex-shrink:0"></i>
-        <span>Documents are used only to ground your board's advice. They are never stored or shared.</span>
+        <span data-i18n="privacy">Documents are used only to ground your board's advice. They are never stored or shared.</span>
       </div>
 
       <div class="q-actions" style="padding-top:20px">
-        <button class="btn-back" onclick="goTo(6)"><i class="ti ti-arrow-left"></i> Back</button>
+        <button class="btn-back" onclick="goTo(6)"><i class="ti ti-arrow-left"></i> <span data-i18n="back">Back</span></button>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-          <button class="btn-next" id="btn-build" onclick="exportOnboarding()"><i class="ti ti-download"></i> Build my board</button>
-          <span class="skip-link" onclick="goTo(8)">Skip — use answers only</span>
+          <button class="btn-next" id="btn-build" onclick="exportOnboarding()"><i class="ti ti-download"></i> <span data-i18n="build">Build my board</span></button>
+          <span class="skip-link" onclick="goTo(8)" data-i18n="skipDocs">Skip — use answers only</span>
         </div>
       </div>
     </div>
@@ -653,9 +671,9 @@ body{
       <div style="width:56px;height:56px;border-radius:16px;background:var(--legal-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
         <i class="ti ti-circle-check" style="font-size:28px;color:var(--legal)"></i>
       </div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--legal);margin-bottom:14px">Your board is ready</p>
-      <h2 style="font-family:'Fraunces',serif;font-size:clamp(24px,4vw,34px);font-weight:500;line-height:1.1;letter-spacing:-0.02em;margin-bottom:8px">They know your business.<br><em style="font-style:italic;color:var(--ink-soft)">Now ask them anything.</em></h2>
-      <p style="font-size:14px;color:var(--ink-faint);margin-bottom:28px">Your profile is built. Three advisors are briefed and waiting.</p>
+      <p style="font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--legal);margin-bottom:14px" data-i18n="s8ready">Your board is ready</p>
+      <h2 style="font-family:var(--serif);font-size:clamp(24px,4vw,34px);font-weight:500;line-height:1.1;letter-spacing:-0.02em;margin-bottom:8px"><span data-i18n="s8h2">They know your business.<br><em style="font-style:italic;color:var(--ink-soft)">Now ask them anything.</em></span></h2>
+      <p style="font-size:14px;color:var(--ink-faint);margin-bottom:28px" data-i18n="s8p">Your profile is built. Three advisors are briefed and waiting.</p>
 
       <div class="pcard" id="profile-card">
         <div class="pcard-top">
@@ -667,19 +685,19 @@ body{
         </div>
         <div class="pcard-grid">
           <div class="pcard-field">
-            <div class="pfield-label">Team size</div>
+            <div class="pfield-label" data-i18n="pfTeam">Team size</div>
             <div class="pfield-val" id="pf-size">11–50 employees</div>
           </div>
           <div class="pcard-field">
-            <div class="pfield-label">Monthly revenue</div>
+            <div class="pfield-label" data-i18n="pfRev">Monthly revenue</div>
             <div class="pfield-val" id="pf-rev">300,000 SAR</div>
           </div>
           <div class="pcard-field">
-            <div class="pfield-label">Risk tolerance</div>
+            <div class="pfield-label" data-i18n="pfRisk">Risk tolerance</div>
             <div class="pfield-val" id="pf-risk">Moderate</div>
           </div>
           <div class="pcard-field">
-            <div class="pfield-label">Documents</div>
+            <div class="pfield-label" data-i18n="pfDocs">Documents</div>
             <div class="pfield-val" id="pf-docs">0 uploaded</div>
           </div>
         </div>
@@ -687,16 +705,16 @@ body{
 
       <div class="board-ready">
         <i class="ti ti-users"></i>
-        <span class="board-ready-text">Your three advisors have been briefed on your business</span>
+        <span class="board-ready-text" data-i18n="ready3">Your three advisors have been briefed on your business</span>
       </div>
 
       <div class="advisor-row">
-        <div class="advisor-mini"><svg class="ring" width="48" height="48"><use href="#char-legal"/></svg><span>Legal</span></div>
-        <div class="advisor-mini"><svg class="ring" width="48" height="48"><use href="#char-finance"/></svg><span>Finance</span></div>
-        <div class="advisor-mini"><svg class="ring" width="48" height="48"><use href="#char-market"/></svg><span>Marketing</span></div>
+        <div class="advisor-mini"><svg class="ring" width="48" height="48"><use href="#char-legal"/></svg><span data-i18n="advL">Legal</span></div>
+        <div class="advisor-mini"><svg class="ring" width="48" height="48"><use href="#char-finance"/></svg><span data-i18n="advF">Finance</span></div>
+        <div class="advisor-mini"><svg class="ring" width="48" height="48"><use href="#char-market"/></svg><span data-i18n="advM">Marketing</span></div>
       </div>
 
-      <button class="btn-full" onclick="window.location.href = APP_URL"><i class="ti ti-arrow-right"></i> Convene the board</button>
+      <button class="btn-full" onclick="window.location.href = APP_URL"><i class="ti ti-arrow-right"></i> <span data-i18n="convene">Convene the board</span></button>
     </div>
   </div>
 
@@ -706,16 +724,12 @@ body{
 <div class="modal-backdrop" id="skip-modal" onclick="if(event.target===this)closeSkipModal()">
   <div class="modal">
     <div class="modal-icon"><i class="ti ti-alert-triangle"></i></div>
-    <h3>Skip the setup?</h3>
-    <p>
-      Your advisors haven't been briefed yet. Without your company information,
-      the board <b>won't respond well</b> — its advice will be generic guesses
-      instead of recommendations tailored to your business.
-    </p>
-    <p class="modal-note">You can always add or edit your company info later from the boardroom.</p>
+    <h3 data-i18n="mTitle">Skip the setup?</h3>
+    <p data-i18n="mBody">Your advisors haven't been briefed yet. Without your company information, the board <b>won't respond well</b> — its advice will be generic guesses instead of recommendations tailored to your business.</p>
+    <p class="modal-note" data-i18n="mNote">You can always add or edit your company info later from the boardroom.</p>
     <div class="modal-actions">
-      <button class="btn-modal-stay" onclick="closeSkipModal()"><i class="ti ti-users"></i> Keep setting up (recommended)</button>
-      <button class="btn-skip-anyway" onclick="window.location.href=APP_URL">Skip anyway — take me to the boardroom</button>
+      <button class="btn-modal-stay" onclick="closeSkipModal()"><i class="ti ti-users"></i> <span data-i18n="mStay">Keep setting up (recommended)</span></button>
+      <button class="btn-skip-anyway" data-i18n="mSkip" onclick="window.location.href=APP_URL">Skip anyway — take me to the boardroom</button>
     </div>
   </div>
 </div>
@@ -746,7 +760,7 @@ function goTo(n){
   if(n===8){pw.style.display='none';}
   else{
     pw.style.display='block';
-    document.getElementById('step-label').textContent=n+' of 7';
+    updateStepLabel();
     document.getElementById('progress-fill').style.width=((n/TOTAL)*100)+'%';
     buildDots();
   }
@@ -777,7 +791,10 @@ function checkQ3(){
 
 function updateRevenue(v){
   const label=revLabels[parseInt(v)]||'';
-  document.getElementById('rev-val').textContent=label+' / month';
+  const shown = lang==='ar'
+    ? (label==='Under 50K SAR' ? 'أقل من 50 ألف ريال' : label.replace('SAR','ريال')) + ' / شهرياً'
+    : label + ' / month';
+  document.getElementById('rev-val').textContent=shown;
   answers.revenue=label;
 }
 
@@ -846,7 +863,7 @@ function buildFileList(){
       <input
         class="q-input"
         style="font-size:13px;padding:9px 12px;margin-top:2px"
-        placeholder="Label this document (e.g. Financial report Q1 2026, Vendor contract, HR policy)"
+        placeholder="${T('fileLabel')}"
         value="${label}"
         oninput="setFileLabel(${i}, this.value)"
       >
@@ -891,7 +908,7 @@ function buildOnboardingPayload(){
 async function exportOnboarding(){
   const btn = document.getElementById('btn-build');
   btn.classList.add('loading');
-  btn.innerHTML = '<i class="ti ti-loader"></i> Building your board...';
+  btn.innerHTML = '<i class="ti ti-loader"></i> ' + T('building');
 
   try {
     const profile = buildOnboardingPayload();
@@ -912,7 +929,7 @@ async function exportOnboarding(){
     console.error('Onboard failed:', err);
     alert(`Could not reach the board: ${err.message}\n\nMake sure the server is running on ${API_URL}`);
     btn.classList.remove('loading');
-    btn.innerHTML = '<i class="ti ti-arrow-right"></i> Build my board';
+    btn.innerHTML = '<i class="ti ti-download"></i> <span data-i18n="build">' + T('build') + '</span>';
   }
 }
 
@@ -924,8 +941,109 @@ function buildProfile(){
   document.getElementById('pf-size').textContent=answers.q3a||'—';
   document.getElementById('pf-rev').textContent=answers.revenue||'—';
   document.getElementById('pf-risk').textContent=answers.q5||'Moderate';
-  document.getElementById('pf-docs').textContent=answers.docs>0?answers.docs+' uploaded':'None';
+  document.getElementById('pf-docs').textContent=answers.docs>0?answers.docs+' '+T('uploaded'):T('none');
 }
+
+// ── EN/AR (shares the 'boardroom.lang' key with the home page and app) ──
+const AR = {
+  topRight:'نجهّز مجلسك', topSkip:'تخطَّ الآن', progress:'الإعداد',
+  next:'متابعة', back:'رجوع',
+  q1e:'السؤال ١', q1t:'حدّثنا عن شركتك',
+  q1h:'يحتاج مجلسك إلى معرفة نشاطك وأين يعمل قبل أن يقدّم لك المشورة.',
+  q2e:'السؤال ٢', q2t:'أي قطاع يصف نشاطك بشكل أفضل؟',
+  q2h:'يُكيّف مستشاروك معرفتهم حسب قطاعك.',
+  q3e:'السؤال ٣', q3t:'ما حجم فريقك؟',
+  q3h:'حجم الفريق يؤثر على نسب النطاقات والتزامات الموارد البشرية وكيف يصيغ مستشاروك توصياتهم.',
+  q4e:'السؤال ٤', q4t:'كم يبلغ إيرادك الشهري تقريباً؟',
+  q4h:'يستخدم المستشار المالي هذا الرقم لحساب الهوامش والسيولة والجدوى المالية.',
+  q5e:'السؤال ٥', q5t:'كيف تتعامل شركتك مع المخاطر؟',
+  q5h:'هذا يحدد كيف يوازن مجلسك بين الحذر والفرصة في كل نقاش.',
+  q6e:'السؤال ٦', q6t:'ما أكبر التحديات التي تواجهك الآن؟',
+  q6h:'اختر كل ما ينطبق — سيولي مجلسك اهتماماً إضافياً لهذه الجوانب.',
+  q7e:'الخطوة الأخيرة', q7t:'أعطِ مجلسك الصورة الكاملة',
+  q7h:'ارفع مستندات شركتك ليتحدث مستشاروك بأرقامك الفعلية لا بالتقديرات. هذه الخطوة اختيارية لكنها تجعل النصيحة أدق بكثير.',
+  o1l:'التجزئة والتجارة الإلكترونية', o1d:'متاجر، متاجر إلكترونية، بيع منتجات',
+  o2l:'اللوجستيات وسلاسل الإمداد', o2d:'نقل، تخزين، توصيل',
+  o3l:'التقنية والبرمجيات', o3d:'برمجيات، تطبيقات، منتجات رقمية',
+  o4l:'الأغذية والضيافة', o4d:'مطاعم، تموين، فنادق',
+  o5l:'الخدمات المهنية', o5d:'استشارات، قانون، محاسبة',
+  o6l:'الإنشاءات والعقارات', o6d:'مقاولات، عقارات، تطوير',
+  o7l:'الرعاية الصحية والعيادات', o7d:'خدمات طبية، صيدليات، عافية',
+  o8l:'أخرى', o8d:'اذكر قطاعك في الأسفل',
+  t1l:'١–١٠ موظفين', t1d:'مرحلة مبكرة بقيادة المؤسس',
+  t2l:'١١–٥٠ موظفاً', t2d:'فريق في نمو',
+  t3l:'٥١–٢٠٠ موظف', t3d:'نشاط راسخ',
+  t4l:'أكثر من ٢٠٠ موظف', t4d:'شركة متوسطة إلى كبيرة',
+  r1l:'متحفّظ', r1d:'نفضّل الاستقرار. نتحرك بحذر ونحمي ما بنيناه.',
+  r2l:'متوازن', r2d:'نوازن بين النمو والحذر. نأخذ مخاطر محسوبة بعائد واضح.',
+  r3l:'جريء', r3d:'نتحرك بسرعة ونراهن بجرأة. السرعة والنمو هما الأهم.',
+  c1:'التدفق النقدي', c2:'التوظيف والموارد البشرية', c3:'التوسع لمدن جديدة',
+  c4:'الاحتفاظ بالعملاء', c5:'الامتثال التنظيمي', c6:'استراتيجية التسعير',
+  c7:'المنافسة', c8:'مشاكل الموردين', c9:'التحول الرقمي',
+  c10:'هوامش الربح', c11:'اكتساب عملاء جدد', c12:'العمليات والإجراءات',
+  slid0:'أقل من ٥٠ ألف', slid1:'٥٠٠ ألف+', slid2:'مليون+',
+  upT:'أسقط ملفاتك هنا', upS:'أو انقر لتصفح جهازك',
+  privacy:'تُستخدم المستندات فقط لتأسيس مشورة مجلسك، ولا تُخزَّن أو تُشارك أبداً.',
+  build:'ابنِ مجلسي', building:'نبني مجلسك...',
+  skipDocs:'تخطَّ — استخدم الإجابات فقط',
+  s8ready:'مجلسك جاهز',
+  s8h2:'هم يعرفون عملك.<br><em style="font-style:italic;color:var(--ink-soft)">الآن اسألهم ما تشاء.</em>',
+  s8p:'اكتمل ملفك التعريفي. ثلاثة مستشارين مطّلعون وبانتظارك.',
+  pfTeam:'حجم الفريق', pfRev:'الإيراد الشهري', pfRisk:'تحمّل المخاطر', pfDocs:'المستندات',
+  ready3:'تم إطلاع مستشاريك الثلاثة على نشاطك',
+  advL:'القانوني', advF:'المالي', advM:'السوق',
+  convene:'اعقد الجلسة',
+  uploaded:'مرفوعة', none:'لا شيء',
+  fileLabel:'صف هذا المستند (مثل: تقرير مالي للربع الأول ٢٠٢٦، عقد مورد، سياسة موارد بشرية)',
+  mTitle:'تتخطى الإعداد؟',
+  mBody:'لم يتعرّف مستشاروك على عملك بعد. بدون معلومات شركتك، <b>لن يجيب المجلس جيداً</b> — ستكون نصائحه تخمينات عامة بدلاً من توصيات مفصّلة لعملك.',
+  mNote:'يمكنك دائماً إضافة معلومات شركتك أو تعديلها لاحقاً من داخل المجلس.',
+  mStay:'أكمل الإعداد (موصى به)',
+  mSkip:'تخطَّ على أي حال — خذني إلى المجلس',
+};
+const AR_PH = {
+  phName:'اسم الشركة',
+  phCity:'المدينة (مثل: الرياض، جدة، الدمام)',
+  phWhat:'ماذا يعمل نشاطك التجاري؟ (مثال: نُدير شركة لوجستية تخدم عملاء الشركات في الرياض)',
+  phOther:'اكتب قطاعك (مثل: سيارات، تعليم، زراعة...)',
+};
+const EN = { uploaded:'uploaded', none:'None',
+  fileLabel:'Label this document (e.g. Financial report Q1 2026, Vendor contract, HR policy)',
+  building:'Building your board...' };
+const EN_PH = {};
+document.querySelectorAll('[data-i18n]').forEach(el => { EN[el.getAttribute('data-i18n')] = el.innerHTML; });
+document.querySelectorAll('[data-i18n-ph]').forEach(el => { EN_PH[el.getAttribute('data-i18n-ph')] = el.placeholder; });
+
+let lang = localStorage.getItem('boardroom.lang') || 'en';
+function T(k){ const d = lang==='ar'?AR:EN; return d[k] != null ? d[k] : EN[k]; }
+function updateStepLabel(){
+  if(currentStep>=8) return;
+  document.getElementById('step-label').textContent =
+    lang==='ar' ? currentStep+' من 7' : currentStep+' of 7';
+}
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang==='ar' ? 'rtl' : 'ltr';
+  const d = lang==='ar'?AR:EN, ph = lang==='ar'?AR_PH:EN_PH;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (d[k] != null) el.innerHTML = d[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.getAttribute('data-i18n-ph');
+    if (ph[k] != null) el.placeholder = ph[k];
+  });
+  document.getElementById('lang-toggle').textContent = lang==='ar' ? 'English' : 'العربية';
+  updateStepLabel();
+  updateRevenue(document.getElementById('rev-slider').value);
+  buildFileList();
+}
+function toggleLang(){
+  lang = lang==='ar' ? 'en' : 'ar';
+  localStorage.setItem('boardroom.lang', lang);
+  applyLang();
+}
+applyLang();
 
 function openSkipModal(){ document.getElementById('skip-modal').classList.add('open'); }
 function closeSkipModal(){ document.getElementById('skip-modal').classList.remove('open'); }

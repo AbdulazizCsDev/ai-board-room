@@ -728,6 +728,85 @@ function Advisors({ t }) {
   );
 }
 
+// Seats evenly around an ellipse (shared 0..100 space with the SVG lines).
+const SEATS = (() => {
+  const cx = 50, cy = 50, rx = 38, ry = 33, n = ADV_LIST.length;
+  const m = {};
+  ADV_LIST.forEach((a, i) => {
+    const ang = ((-90 + (i * 360) / n) * Math.PI) / 180;
+    m[a.id] = { x: cx + rx * Math.cos(ang), y: cy + ry * Math.sin(ang) };
+  });
+  return m;
+})();
+
+// Reading-scaled pause before the next contribution appears.
+function revealDwell(beat, t) {
+  const txt =
+    (t(beat.data.perspective) || "") + " " +
+    (beat.data.conditions || []).map(t).join(" ") + " " +
+    (t(beat.data.reasoning) || "");
+  return Math.min(9000, Math.max(3200, 1400 + txt.length * 30));
+}
+
+// ── Board seats: who is speaking, and to whom (the table itself is gone) ──────
+function BoardSeats({ t, byId, activeId, targetId, activeNum, pinned }) {
+  const ids = ADV_LIST.map((a) => a.id);
+  const pairs = [];
+  for (let i = 0; i < ids.length; i++)
+    for (let j = i + 1; j < ids.length; j++) pairs.push([ids[i], ids[j]]);
+
+  return (
+    <div className={"board-seats" + (pinned ? " pinned" : "")}>
+      <svg className="bt-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+        {pairs.map(([a, b], i) => (
+          <line
+            key={i}
+            x1={SEATS[a].x} y1={SEATS[a].y}
+            x2={SEATS[b].x} y2={SEATS[b].y}
+            className="bt-line"
+          />
+        ))}
+        {activeId && targetId && SEATS[activeId] && SEATS[targetId] && (
+          <line
+            x1={SEATS[activeId].x} y1={SEATS[activeId].y}
+            x2={SEATS[targetId].x} y2={SEATS[targetId].y}
+            className="bt-line active"
+            style={{ stroke: ADVISORS[activeId].accent }}
+          />
+        )}
+      </svg>
+      {ADV_LIST.map((a) => {
+        const pos = SEATS[a.id];
+        const resp = byId[a.id];
+        const isActive = a.id === activeId;
+        const isTarget = a.id === targetId;
+        return (
+          <div
+            key={a.id}
+            className={
+              "bt-seat" +
+              (resp ? " filled" : "") +
+              (isActive ? " active" : "") +
+              (isTarget ? " targeted" : "") +
+              (resp && resp.relevant === false ? " muted" : "")
+            }
+            style={{ left: pos.x + "%", top: pos.y + "%", ...advVars(a) }}
+          >
+            <div className="bt-seat-av">
+              <AdvisorIcon name={a.icon} color={a.accent} size={24} />
+              {isActive && activeNum != null && (
+                <span className="bt-seat-num">{activeNum}</span>
+              )}
+            </div>
+            <span className="bt-seat-name">{t(a.name)}</span>
+            {isActive && <span className="bt-seat-status">{t(UI.speakingNow)}</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Debate feed (shared by live + review) ─────────────────────────────────────
 function ContributionCard({ t, beat, n }) {
   const a = ADVISORS[beat.data.advisor];
@@ -838,11 +917,14 @@ function EmptyState({ t, onGo }) {
   );
 }
 
-// ── Live debate: contributions stream into the feed; interject anytime ────────
+// ── Live debate: contributions reveal one by one; interject anytime ──────────
 function LiveDebate({ t, lang, decision, baseContext, onSessionReady }) {
-  // phase: r1 | r2 | verdict | error — completion hands the session to review.
+  // phase: r1 | r2 | verdict | done | error — after the reveal catches up,
+  // "done" hands the finished session to the review view.
   const [phase, setPhase] = useState("r1");
-  const [beats, setBeats] = useState([]); // {round, data} in arrival order
+  const [arrived, setArrived] = useState([]); // every beat the API returned
+  const [shown, setShown] = useState(0);      // how many are revealed so far
+  const [verdict, setVerdict] = useState(null);
   const [interject, setInterject] = useState("");
   const [flash, setFlash] = useState(false);
 
@@ -853,17 +935,39 @@ function LiveDebate({ t, lang, decision, baseContext, onSessionReady }) {
   const cancelRef = useRef(null);
   const endRef = useRef(null);
 
-  // keep the newest contribution in view
+  const beats = arrived.slice(0, shown);
+
+  // Reveal the queue one contribution at a time, paced to reading time.
+  useEffect(() => {
+    if (shown >= arrived.length) return;
+    const delay = shown === 0 ? 500 : revealDwell(arrived[shown - 1], t);
+    const id = setTimeout(() => setShown((n) => n + 1), delay);
+    return () => clearTimeout(id);
+  }, [shown, arrived, t]);
+
+  // Keep the newest contribution in view.
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [beats.length, phase]);
+  }, [shown, phase]);
+
+  // Once the verdict is in AND the reveal has caught up, hand off to review.
+  useEffect(() => {
+    if (phase !== "done" || !verdict || shown < arrived.length) return;
+    const id = setTimeout(() => {
+      onSessionReady(
+        buildLiveSession(decision, round1Ref.current, round2Ref.current, verdict)
+      );
+    }, 1600);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, verdict, shown, arrived.length]);
 
   // ── orchestration: round1 → round2 → verdict, back-to-back ──────────────────
   useEffect(() => {
     cancelRef.current = streamRound(decision, lang, contextRef.current, 1, [], {
       onAdvisor: (a) => {
         round1Ref.current.push(a);
-        setBeats((b) => [...b, { round: 1, data: a }]);
+        setArrived((b) => [...b, { round: 1, data: a }]);
       },
       onDone: startRound2,
       onError: () => setPhase("error"),
@@ -886,7 +990,7 @@ function LiveDebate({ t, lang, decision, baseContext, onSessionReady }) {
     cancelRef.current = streamRound(decision, lang, contextRef.current, 2, round1Ref.current, {
       onAdvisor: (a) => {
         round2Ref.current.push(a);
-        setBeats((b) => [...b, { round: 2, data: a }]);
+        setArrived((b) => [...b, { round: 2, data: a }]);
       },
       onDone: goVerdict,
       onError: () => setPhase("error"),
@@ -900,19 +1004,33 @@ function LiveDebate({ t, lang, decision, baseContext, onSessionReady }) {
       const v = await runVerdict(
         decision, lang, contextRef.current, round1Ref.current, round2Ref.current
       );
-      onSessionReady(buildLiveSession(decision, round1Ref.current, round2Ref.current, v));
+      setVerdict(v);
+      setPhase("done");
     } catch {
       setPhase("error");
     }
   }
 
   const total = 2 * ADV_LIST.length; // expected contributions
-  const status =
-    phase === "verdict"
-      ? t(UI.synthesizing)
-      : phase === "r2"
-      ? t(UI.round2)
-      : t(UI.round1);
+  const activeBeat = beats[beats.length - 1] || null;
+  const activeId = activeBeat?.data.advisor || null;
+  const targetId = activeBeat?.round === 2 ? activeBeat.data.respondsTo : null;
+  const revealing = shown < arrived.length;
+  const finished = phase === "done" && !revealing;
+
+  const byId = useMemo(() => {
+    const m = {};
+    beats.forEach((b) => (m[b.data.advisor] = b.data));
+    return m;
+  }, [beats]);
+
+  const status = finished
+    ? t(UI.debateTitle)
+    : phase === "verdict" && !revealing
+    ? t(UI.synthesizing)
+    : activeBeat
+    ? t(activeBeat.round === 2 ? UI.round2 : UI.round1)
+    : t(UI.boardRunning);
 
   const sendInterject = () => {
     if (!interject.trim()) return;
@@ -937,19 +1055,32 @@ function LiveDebate({ t, lang, decision, baseContext, onSessionReady }) {
       {phase !== "error" && (
         <div className="round-banner">
           <span className="round-label">{status}</span>
-          <IconLoader2 size={14} className="spin" />
+          {!finished && <IconLoader2 size={14} className="spin" />}
           <span className="round-count">{beats.length} / {total}</span>
         </div>
       )}
+
+      <BoardSeats
+        t={t}
+        byId={byId}
+        activeId={finished ? null : activeId}
+        targetId={finished ? null : targetId}
+        activeNum={activeBeat ? beats.length : null}
+        pinned={!finished}
+      />
 
       <DebateFeed
         t={t}
         beats={beats}
         thinking={
-          phase === "error"
+          phase === "error" || finished
             ? null
-            : phase === "verdict"
-            ? t(UI.synthesizing)
+            : phase === "done" || phase === "verdict"
+            ? revealing
+              ? null
+              : t(UI.synthesizing)
+            : revealing
+            ? null
             : t(UI.deliberating)
         }
       />
@@ -958,18 +1089,20 @@ function LiveDebate({ t, lang, decision, baseContext, onSessionReady }) {
       {phase === "error" ? (
         <p className="error-msg">{t(UI.apiError)}</p>
       ) : (
-        <div className={"live-interject" + (flash ? " flash" : "")}>
-          <input
-            className="interject-input"
-            value={interject}
-            placeholder={flash ? t(UI.interjected) + " ✓" : t(UI.interjectPlaceholder)}
-            onChange={(e) => setInterject(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") sendInterject(); }}
-          />
-          <button className="ctrl" onClick={sendInterject} disabled={!interject.trim()}>
-            <IconSend size={15} /> {t(UI.send)}
-          </button>
-        </div>
+        !finished && (
+          <div className={"live-interject" + (flash ? " flash" : "")}>
+            <input
+              className="interject-input"
+              value={interject}
+              placeholder={flash ? t(UI.interjected) + " ✓" : t(UI.interjectPlaceholder)}
+              onChange={(e) => setInterject(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") sendInterject(); }}
+            />
+            <button className="ctrl" onClick={sendInterject} disabled={!interject.trim()}>
+              <IconSend size={15} /> {t(UI.send)}
+            </button>
+          </div>
+        )
       )}
     </div>
   );
@@ -990,6 +1123,12 @@ function ReplayDebate({ t, session, setSaved, onVerdict }) {
     setSavedTick(true);
     setTimeout(() => setSavedTick(false), 1800);
   };
+
+  const byId = useMemo(() => {
+    const m = {};
+    beats.forEach((b) => (m[b.data.advisor] = b.data));
+    return m;
+  }, [beats]);
 
   return (
     <div className="panel-pad">
@@ -1015,6 +1154,8 @@ function ReplayDebate({ t, session, setSaved, onVerdict }) {
           {t(session.source === "live" ? UI.liveBadge : UI.demoBadge)}
         </span>
       </div>
+
+      <BoardSeats t={t} byId={byId} activeId={null} targetId={null} activeNum={null} />
 
       <DebateFeed t={t} beats={beats} />
 
